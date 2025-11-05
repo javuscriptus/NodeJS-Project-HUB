@@ -9,7 +9,34 @@ permissions:
   contents: write
 
 jobs:
-  release:
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      release_id: ${{ steps.create_release.outputs.id }}
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Get tag name
+      id: tag
+      run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.tag.outputs.tag }}
+        release_name: Release ${{ steps.tag.outputs.tag }}
+        body: |
+          🚀 Release ${{ steps.tag.outputs.tag }}
+          
+          See [Release Notes](https://github.com/javuscriptus/NodeJS-Project-HUB/blob/main/.github/RELEASE_NOTES_v2.0.0.md) for details.
+        draft: false
+        prerelease: false
+
+  build:
+    needs: create-release
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -36,6 +63,10 @@ jobs:
     
     - name: Build renderer process
       run: npm run build
+    
+    - name: Get tag name
+      id: tag
+      run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
     
     - name: Build Electron app for Windows
       if: matrix.os == 'windows-latest'
