@@ -14,6 +14,13 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: windows-latest
+            artifact-path: dist-build/*.exe
+          - os: ubuntu-latest
+            artifact-path: dist-build/*.AppImage
+          - os: macos-latest
+            artifact-path: dist-build/*.dmg
 
     steps:
     - uses: actions/checkout@v4
@@ -27,19 +34,24 @@ jobs:
     - name: Install dependencies
       run: npm ci
     
-    - name: Build and release
+    - name: Build renderer process
+      run: npm run build
+    
+    - name: Build and publish Electron app
       run: npm run build:release
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        CSC_IDENTITY_AUTO_DISCOVERY: false
     
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: release-${{ matrix.os }}
         path: |
-          dist-build/*.exe
-          dist-build/*.dmg
-          dist-build/*.AppImage
-          dist-build/*.deb
-          dist-build/*.rpm
+          dist-build/*
+          !dist-build/win-unpacked
+          !dist-build/linux-unpacked
+          !dist-build/mac
+        retention-days: 30
 

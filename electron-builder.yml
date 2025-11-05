@@ -2,13 +2,13 @@ appId: com.bettings.projecthub
 productName: nodejs project hub
 copyright: Copyright © 2025
 directories:
-  output: dist
+  output: dist-build
   buildResources: build
 
 publish:
   provider: github
-  owner: yourname
-  repo: nodejs-project-hub
+  owner: javuscriptus
+  repo: NodeJS-Project-HUB
   releaseType: release
 
 win:
@@ -16,8 +16,26 @@ win:
     - target: nsis
       arch:
         - x64
+    - target: portable
+      arch:
+        - x64
   icon: build/icon.ico
   publisherName: nodejs project hub Team
+  signAndEditExecutable: false
+
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+  category: Development
+
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+  category: public.app-category.developer-tools
 
 nsis:
   oneClick: false
@@ -34,8 +52,8 @@ files:
   - from: .
     filter:
       - package.json
-  - from: dist
-    to: dist
+  - from: dist/renderer
+    to: dist/renderer
   - from: src/main
     to: src/main
   - from: src/preload

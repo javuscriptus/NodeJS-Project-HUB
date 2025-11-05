@@ -54,8 +54,24 @@ jobs:
     - name: Install dependencies
       run: npm ci
     
+    - name: Build renderer process
+      run: npm run build
+    
     - name: Build Electron app
-      run: npm run build:electron --if-present
+      run: npm run build:electron
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        CSC_IDENTITY_AUTO_DISCOVERY: false
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-${{ matrix.os }}
+        path: |
+          dist-build/*
+          !dist-build/win-unpacked
+          !dist-build/linux-unpacked
+          !dist-build/mac
+        retention-days: 7
 
