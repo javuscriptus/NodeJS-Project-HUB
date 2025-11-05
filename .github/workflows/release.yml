@@ -67,27 +67,42 @@ jobs:
     
     - name: Build Electron app for Windows
       if: matrix.os == 'windows-latest'
-      run: npx electron-builder --win --publish always
+      run: npx electron-builder --win --publish never
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         CSC_IDENTITY_AUTO_DISCOVERY: false
     
     - name: Build Electron app for Linux
       if: matrix.os == 'ubuntu-latest'
-      run: npx electron-builder --linux --publish always
+      run: npx electron-builder --linux --publish never
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         CSC_IDENTITY_AUTO_DISCOVERY: false
     
     - name: Build Electron app for macOS
       if: matrix.os == 'macos-latest'
-      run: npx electron-builder --mac --publish always
+      run: npx electron-builder --mac --publish never
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         CSC_IDENTITY_AUTO_DISCOVERY: false
+    
+    - name: Get tag name for upload
+      id: get_tag
+      run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+    
+    - name: Upload release assets
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.get_tag.outputs.tag }}
+        files: |
+          dist-build/*.exe
+          dist-build/*.AppImage
+          dist-build/*.dmg
+          dist-build/*.zip
+          !dist-build/*.blockmap
+          !dist-build/win-unpacked
+          !dist-build/linux-unpacked
+          !dist-build/mac*
+          !dist-build/*.yml
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Upload artifacts (backup)
       uses: actions/upload-artifact@v4
@@ -99,7 +114,6 @@ jobs:
           dist-build/*.AppImage
           dist-build/*.dmg
           dist-build/*.zip
-          dist-build/*.tar.gz
           !dist-build/win-unpacked
           !dist-build/linux-unpacked
           !dist-build/mac
