@@ -152,24 +152,31 @@ export default function App() {
       return;
     }
 
-    // Проверяем remote статус для dev и main веток каждого проекта
+    // Проверяем remote статус для отслеживаемых веток каждого проекта
     const updatedProjects = [...projectsList];
 
     for (let i = 0; i < updatedProjects.length; i++) {
       const project = updatedProjects[i];
       try {
-        // Проверяем dev и main ветки параллельно
-        const [devStatus, mainStatus] = await Promise.all([
-          window.electronAPI.checkRemoteStatus(project.path, 'dev'),
-          window.electronAPI.checkRemoteStatus(project.path, 'main'),
-        ]);
+        // Получаем список отслеживаемых веток для этого проекта
+        const branchesResult = await window.electronAPI.getTrackedBranches(project.path);
+        const trackedBranches = branchesResult.success ? branchesResult.branches : ['dev', 'main'];
+
+        // Проверяем все отслеживаемые ветки параллельно
+        const statusChecks = trackedBranches.map(branch =>
+          window.electronAPI.checkRemoteStatus(project.path, branch)
+        );
+        const statuses = await Promise.all(statusChecks);
+
+        // Создаём объект со статусами { branch: status }
+        const gitRemoteStatus = {};
+        trackedBranches.forEach((branch, index) => {
+          gitRemoteStatus[branch] = statuses[index];
+        });
 
         updatedProjects[i] = {
           ...project,
-          gitRemoteStatus: {
-            dev: devStatus,
-            main: mainStatus,
-          },
+          gitRemoteStatus,
         };
 
         // Обновляем state после каждой проверки для постепенного отображения

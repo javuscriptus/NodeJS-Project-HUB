@@ -95,13 +95,13 @@ project-hub/
 
 ```javascript
 // ✅ Хорошо
-const getUserData = async (userId) => {
+const getUserData = async userId => {
   const data = await fetchUser(userId);
   return data;
 };
 
 // ❌ Плохо
-const get_user_data = async (user_id) => {
+const get_user_data = async user_id => {
   const data = await fetchUser(user_id);
   return data;
 };
@@ -201,6 +201,7 @@ npm run build
 ## 🙏 Спасибо!
 
 Каждый вклад имеет значение, будь то:
+
 - 🐛 Исправление опечатки
 - 📝 Улучшение документации
 - ✨ Новая функция
@@ -213,7 +214,7 @@ npm run build
 ## Вопросы?
 
 Не стесняйтесь:
+
 - Открыть [Discussion](https://github.com/javuscriptus/NodeJS-Project-HUB/discussions)
 - Создать [Issue](https://github.com/javuscriptus/NodeJS-Project-HUB/issues)
 - Написать в комментариях к Pull Request
-

@@ -33,6 +33,10 @@ const {
   setProjectNodeVersion,
   getGitRemoteCheckEnabled,
   setGitRemoteCheckEnabled,
+  getTrackedBranches,
+  setTrackedBranches,
+  getDefaultTrackedBranches,
+  setDefaultTrackedBranches,
 } = require('./config');
 const { TerminalDetector } = require('./terminalDetector');
 const { NodeVersionManager } = require('./nodeVersionManager');
@@ -694,6 +698,52 @@ ipcMain.handle('git:set-remote-check-enabled', async (event, { enabled }) => {
     return result;
   } catch (error) {
     log.error('Set git remote check enabled error:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+// Получить список отслеживаемых веток для проекта
+ipcMain.handle('git:get-tracked-branches', async (event, projectPath) => {
+  try {
+    const branches = await getTrackedBranches(projectPath);
+    return { success: true, branches };
+  } catch (error) {
+    log.error('Get tracked branches error:', error);
+    return { success: false, branches: ['dev', 'main'], error: error.message };
+  }
+});
+
+// Установить список отслеживаемых веток для проекта
+ipcMain.handle('git:set-tracked-branches', async (event, { projectPath, branches }) => {
+  try {
+    log.info('Setting tracked branches for:', projectPath, branches);
+    const result = await setTrackedBranches(projectPath, branches);
+    return result;
+  } catch (error) {
+    log.error('Set tracked branches error:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+// Получить глобальный список отслеживаемых веток (по умолчанию)
+ipcMain.handle('git:get-default-tracked-branches', async () => {
+  try {
+    const branches = await getDefaultTrackedBranches();
+    return { success: true, branches };
+  } catch (error) {
+    log.error('Get default tracked branches error:', error);
+    return { success: false, branches: ['dev', 'main'], error: error.message };
+  }
+});
+
+// Установить глобальный список отслеживаемых веток (по умолчанию)
+ipcMain.handle('git:set-default-tracked-branches', async (event, { branches }) => {
+  try {
+    log.info('Setting default tracked branches:', branches);
+    const result = await setDefaultTrackedBranches(branches);
+    return result;
+  } catch (error) {
+    log.error('Set default tracked branches error:', error);
     return { success: false, error: error.message };
   }
 });

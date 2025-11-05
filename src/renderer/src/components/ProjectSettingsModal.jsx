@@ -6,6 +6,8 @@ export default function ProjectSettingsModal({ project, isOpen, onClose, onSave 
   const [aliases, setAliases] = useState('');
   const [notes, setNotes] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [availableBranches, setAvailableBranches] = useState([]);
+  const [trackedBranches, setTrackedBranches] = useState([]);
 
   useEffect(() => {
     if (isOpen && project) {
@@ -18,11 +20,24 @@ export default function ProjectSettingsModal({ project, isOpen, onClose, onSave 
     
     setIsLoading(true);
     try {
-      const result = await window.electronAPI.getProjectMetadata(project.path);
-      if (result.success) {
-        setTags(result.metadata.tags || []);
-        setAliases((result.metadata.aliases || []).join(', '));
-        setNotes(result.metadata.notes || '');
+      const [metadataResult, branchesResult, trackedResult] = await Promise.all([
+        window.electronAPI.getProjectMetadata(project.path),
+        window.electronAPI.getBranches(project.path),
+        window.electronAPI.getTrackedBranches(project.path)
+      ]);
+
+      if (metadataResult.success) {
+        setTags(metadataResult.metadata.tags || []);
+        setAliases((metadataResult.metadata.aliases || []).join(', '));
+        setNotes(metadataResult.metadata.notes || '');
+      }
+
+      if (branchesResult.success) {
+        setAvailableBranches(branchesResult.branches || []);
+      }
+
+      if (trackedResult.success) {
+        setTrackedBranches(trackedResult.branches || ['dev', 'main']);
       }
     } catch (error) {
       console.error('Failed to load project metadata:', error);
@@ -45,7 +60,8 @@ export default function ProjectSettingsModal({ project, isOpen, onClose, onSave 
       // Сохраняем все метаданные
       await Promise.all([
         window.electronAPI.setProjectAliases(project.path, aliasesArray),
-        window.electronAPI.setProjectNotes(project.path, notes)
+        window.electronAPI.setProjectNotes(project.path, notes),
+        window.electronAPI.setTrackedBranches(project.path, trackedBranches)
       ]);
 
       // Теги уже сохранены через TagInput (если нужно отдельное сохранение)
@@ -63,6 +79,14 @@ export default function ProjectSettingsModal({ project, isOpen, onClose, onSave 
 
   const handleTagsChange = (newTags) => {
     setTags(newTags);
+  };
+
+  const handleBranchToggle = (branch) => {
+    if (trackedBranches.includes(branch)) {
+      setTrackedBranches(trackedBranches.filter(b => b !== branch));
+    } else {
+      setTrackedBranches([...trackedBranches, branch]);
+    }
   };
 
   console.log('ProjectSettingsModal render:', { isOpen, project });
@@ -146,6 +170,33 @@ export default function ProjectSettingsModal({ project, isOpen, onClose, onSave 
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   Заметки также учитываются при поиске
+                </p>
+              </div>
+
+              {/* Отслеживаемые ветки для Git Remote Status */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  🌿 Отслеживаемые ветки
+                </label>
+                {availableBranches.length > 0 ? (
+                  <div className="space-y-2 max-h-40 overflow-y-auto bg-gray-700 p-3 rounded border border-gray-600">
+                    {availableBranches.map(branch => (
+                      <label key={branch} className="flex items-center gap-2 cursor-pointer hover:bg-gray-600 p-2 rounded">
+                        <input
+                          type="checkbox"
+                          checked={trackedBranches.includes(branch)}
+                          onChange={() => handleBranchToggle(branch)}
+                          className="w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500"
+                        />
+                        <span className="text-sm text-white">{branch}</span>
+                      </label>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-500 italic">Нет доступных веток</p>
+                )}
+                <p className="text-xs text-gray-500 mt-1">
+                  Выберите ветки для проверки remote status (требуется интернет и VPN для GitLab)
                 </p>
               </div>
             </>

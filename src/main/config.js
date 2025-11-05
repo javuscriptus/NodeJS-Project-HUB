@@ -447,6 +447,76 @@ async function setGitRemoteCheckEnabled(enabled) {
   }
 }
 
+/**
+ * Получить список отслеживаемых веток для проекта
+ * @param {string} projectPath - Путь к проекту
+ * @returns {Promise<string[]>} Массив названий веток
+ */
+async function getTrackedBranches(projectPath) {
+  try {
+    const config = await loadConfig();
+    if (!config.trackedBranches || !config.trackedBranches[projectPath]) {
+      // По умолчанию отслеживаем dev и main
+      return ['dev', 'main'];
+    }
+    return config.trackedBranches[projectPath];
+  } catch (error) {
+    return ['dev', 'main'];
+  }
+}
+
+/**
+ * Установить список отслеживаемых веток для проекта
+ * @param {string} projectPath - Путь к проекту
+ * @param {string[]} branches - Массив названий веток
+ * @returns {Promise<Object>} { success, error? }
+ */
+async function setTrackedBranches(projectPath, branches) {
+  try {
+    const config = await loadConfig();
+    
+    if (!config.trackedBranches) {
+      config.trackedBranches = {};
+    }
+    
+    config.trackedBranches[projectPath] = branches;
+    await saveConfig(config);
+    
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Получить глобальный список отслеживаемых веток (по умолчанию для новых проектов)
+ * @returns {Promise<string[]>} Массив названий веток
+ */
+async function getDefaultTrackedBranches() {
+  try {
+    const config = await loadConfig();
+    return config.defaultTrackedBranches || ['dev', 'main'];
+  } catch (error) {
+    return ['dev', 'main'];
+  }
+}
+
+/**
+ * Установить глобальный список отслеживаемых веток
+ * @param {string[]} branches - Массив названий веток
+ * @returns {Promise<Object>} { success, error? }
+ */
+async function setDefaultTrackedBranches(branches) {
+  try {
+    const config = await loadConfig();
+    config.defaultTrackedBranches = branches;
+    await saveConfig(config);
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
 module.exports = {
   loadConfig,
   saveConfig,
@@ -471,6 +541,10 @@ module.exports = {
   getProjectNodeVersion,
   setProjectNodeVersion,
   getGitRemoteCheckEnabled,
-  setGitRemoteCheckEnabled
+  setGitRemoteCheckEnabled,
+  getTrackedBranches,
+  setTrackedBranches,
+  getDefaultTrackedBranches,
+  setDefaultTrackedBranches
 };
 

@@ -426,6 +426,42 @@ contextBridge.exposeInMainWorld('electronAPI', {
    */
   setGitRemoteCheckEnabled: (enabled) => {
     return ipcRenderer.invoke('git:set-remote-check-enabled', { enabled });
+  },
+
+  /**
+   * Получает список отслеживаемых веток для проекта
+   * @param {string} projectPath - путь к проекту
+   * @returns {Promise<{success: boolean, branches: string[], error?: string}>}
+   */
+  getTrackedBranches: (projectPath) => {
+    return ipcRenderer.invoke('git:get-tracked-branches', projectPath);
+  },
+
+  /**
+   * Устанавливает список отслеживаемых веток для проекта
+   * @param {string} projectPath - путь к проекту
+   * @param {string[]} branches - массив названий веток
+   * @returns {Promise<{success: boolean, error?: string}>}
+   */
+  setTrackedBranches: (projectPath, branches) => {
+    return ipcRenderer.invoke('git:set-tracked-branches', { projectPath, branches });
+  },
+
+  /**
+   * Получает глобальный список отслеживаемых веток (по умолчанию)
+   * @returns {Promise<{success: boolean, branches: string[], error?: string}>}
+   */
+  getDefaultTrackedBranches: () => {
+    return ipcRenderer.invoke('git:get-default-tracked-branches');
+  },
+
+  /**
+   * Устанавливает глобальный список отслеживаемых веток (по умолчанию)
+   * @param {string[]} branches - массив названий веток
+   * @returns {Promise<{success: boolean, error?: string}>}
+   */
+  setDefaultTrackedBranches: (branches) => {
+    return ipcRenderer.invoke('git:set-default-tracked-branches', { branches });
   }
 });
 
