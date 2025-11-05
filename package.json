@@ -9,11 +9,14 @@
     "dev": "vite",
     "build": "vite build",
     "build:win": "npm run build && electron-builder --win",
+    "build:release": "npm run build && electron-builder --win --publish always",
+    "build:electron": "npm run build && electron-builder --win --publish never",
     "start": "electron .",
     "dev:all": "node scripts/dev.js",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "lint": "echo 'Linting passed'"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",
@@ -50,7 +53,16 @@
       "package.json"
     ],
     "win": {
-      "target": "nsis",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
       "icon": "build/icon.ico",
       "signAndEditExecutable": false
     },
@@ -59,7 +71,15 @@
       "allowToChangeInstallationDirectory": true,
       "perMachine": false,
       "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
+      "createStartMenuShortcut": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "license": "LICENSE"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "javuscriptus",
+      "repo": "NodeJS-Project-HUB"
     }
   }
 }

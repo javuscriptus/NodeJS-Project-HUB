@@ -1,6 +1,26 @@
-# nodejs project hub
+<div align="center">
 
-Desktop-приложение для управления Node.js проектами на Windows. Быстрый доступ к npm скриптам, git операциям и навигации по проектам.
+# 🚀 NodeJS Project Hub
+
+**Desktop-приложение для управления Node.js проектами**
+
+Быстрый доступ к npm скриптам, git операциям и навигации по проектам
+
+[![Build Status](https://github.com/javuscriptus/NodeJS-Project-HUB/workflows/Build%20and%20Test/badge.svg)](https://github.com/javuscriptus/NodeJS-Project-HUB/actions)
+[![Release](https://img.shields.io/github/v/release/javuscriptus/NodeJS-Project-HUB)](https://github.com/javuscriptus/NodeJS-Project-HUB/releases)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Windows-blue.svg)](https://github.com/javuscriptus/NodeJS-Project-HUB)
+[![Node Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org)
+[![Downloads](https://img.shields.io/github/downloads/javuscriptus/NodeJS-Project-HUB/total)](https://github.com/javuscriptus/NodeJS-Project-HUB/releases)
+[![Stars](https://img.shields.io/github/stars/javuscriptus/NodeJS-Project-HUB?style=social)](https://github.com/javuscriptus/NodeJS-Project-HUB)
+
+[Скачать](https://github.com/javuscriptus/NodeJS-Project-HUB/releases) • [Документация](#использование) • [Roadmap](#roadmap-v30) • [Contributing](CONTRIBUTING.md)
+
+![NodeJS Project Hub](https://via.placeholder.com/800x450/1a1a2e/16a085?text=NodeJS+Project+Hub+Screenshot)
+
+</div>
+
+---
 
 ## Возможности
 
@@ -210,23 +230,75 @@ C:\Users\<Username>\AppData\Roaming\BettingsProjectHub\logs\main.log
 - ✅ Whitelist для npm скриптов
 - ✅ Escape аргументов команд
 
-## Лицензия
+## 🤝 Contributing
 
-MIT
+Мы приветствуем вклад от сообщества! Пожалуйста, ознакомьтесь с [руководством по вкладу](CONTRIBUTING.md).
 
-## Автор
+### Как помочь
 
-nodejs project hub Team
+- 🐛 [Сообщить о баге](https://github.com/javuscriptus/NodeJS-Project-HUB/issues/new?template=bug_report.md)
+- ✨ [Предложить функцию](https://github.com/javuscriptus/NodeJS-Project-HUB/issues/new?template=feature_request.md)
+- 📖 Улучшить документацию
+- 🔀 Отправить Pull Request
 
-## Поддержка
+### Контрибьюторы
+
+<a href="https://github.com/javuscriptus/NodeJS-Project-HUB/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=javuscriptus/NodeJS-Project-HUB" />
+</a>
+
+## 📄 Лицензия
+
+Проект распространяется под лицензией [MIT](LICENSE).
+
+## 🆘 Поддержка
 
 Если у вас возникли проблемы:
 
-1. Проверьте логи в `AppData\Roaming\BettingsProjectHub\logs`
-2. Убедитесь, что git установлен и доступен в PATH
-3. Проверьте права доступа к папкам с проектами
+1. 📖 Проверьте [документацию](#использование)
+2. 🔍 Поищите в [Issues](https://github.com/javuscriptus/NodeJS-Project-HUB/issues)
+3. 💬 Создайте [новый Issue](https://github.com/javuscriptus/NodeJS-Project-HUB/issues/new)
+4. 📝 Проверьте логи в `AppData\Roaming\BettingsProjectHub\logs`
 
-Для сообщения об ошибках создайте issue на GitHub.
+### Частые проблемы
+
+<details>
+<summary>Git операции не работают</summary>
+
+- Убедитесь, что Git установлен и доступен в PATH
+- Проверьте права доступа к папкам с проектами
+- Для GitLab используйте Git Credential Manager
+</details>
+
+<details>
+<summary>Не отображаются проекты</summary>
+
+- Убедитесь, что в папке есть `package.json` и `.git`
+- Проверьте путь к корневой папке проектов
+- Попробуйте пересканировать проекты
+</details>
+
+<details>
+<summary>Скрипты не запускаются</summary>
+
+- Проверьте, что Node.js установлен
+- Убедитесь, что package.json содержит секцию scripts
+- Проверьте выбранный терминал в настройках
+</details>
+
+## ⭐ Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=javuscriptus/NodeJS-Project-HUB&type=Date)](https://star-history.com/#javuscriptus/NodeJS-Project-HUB&Date)
+
+---
+
+<div align="center">
+
+**Сделано с ❤️ для Node.js разработчиков**
+
+[⬆ Наверх](#-nodejs-project-hub)
+
+</div>
 
 ## Что нового в v2.0
 
