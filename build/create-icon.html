@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Создание иконки Project Hub</title>
+</head>
+<body>
+    <canvas id="canvas" width="256" height="256"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Фон градиент
+        const gradient = ctx.createLinearGradient(0, 0, 256, 256);
+        gradient.addColorStop(0, '#3b82f6');
+        gradient.addColorStop(1, '#1d4ed8');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 256, 256);
+        
+        // Белая папка
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(60, 90, 136, 100);
+        ctx.fillRect(60, 70, 80, 20);
+        
+        // Тень папки
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        ctx.fillRect(65, 95, 126, 5);
+        
+        // Символ JS в центре
+        ctx.fillStyle = '#f0db4f';
+        ctx.fillRect(100, 120, 56, 56);
+        
+        ctx.font = 'bold 36px Arial';
+        ctx.fillStyle = '#323330';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('JS', 128, 148);
+        
+        // Экспорт
+        canvas.toBlob((blob) => {
+            const link = document.createElement('a');
+            link.download = 'icon.png';
+            link.href = URL.createObjectURL(blob);
+            link.click();
+        });
+    </script>
+    <p>Иконка автоматически загрузится. Затем конвертируйте PNG в ICO через онлайн-сервис (например, https://convertio.co/ru/png-ico/)</p>
+</body>
+</html>
+

@@ -1,0 +1,48 @@
+appId: com.bettings.projecthub
+productName: nodejs project hub
+copyright: Copyright © 2025
+directories:
+  output: dist
+  buildResources: build
+
+publish:
+  provider: github
+  owner: yourname
+  repo: nodejs-project-hub
+  releaseType: release
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: build/icon.ico
+  publisherName: nodejs project hub Team
+
+nsis:
+  oneClick: false
+  allowElevation: true
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: nodejs project hub
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+
+files:
+  - from: .
+    filter:
+      - package.json
+  - from: dist
+    to: dist
+  - from: src/main
+    to: src/main
+  - from: src/preload
+    to: src/preload
+
+extraResources:
+  - from: build
+    to: build
+    filter:
+      - '**/*'

@@ -1,0 +1,65 @@
+{
+  "name": "nodejs-project-hub",
+  "version": "2.0.0",
+  "description": "Desktop приложение для управления Node.js проектами",
+  "main": "src/main/index.js",
+  "author": "nodejs project hub Team",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:win": "npm run build && electron-builder --win",
+    "start": "electron .",
+    "dev:all": "node scripts/dev.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.19",
+    "@vitejs/plugin-react": "^4.7.0",
+    "@vitest/ui": "^4.0.6",
+    "autoprefixer": "^10.4.21",
+    "electron": "^39.0.0",
+    "electron-builder": "^26.0.12",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.18",
+    "vite": "^6.4.1",
+    "vitest": "^4.0.6"
+  },
+  "dependencies": {
+    "cyrillic-to-translit-js": "^3.2.1",
+    "dompurify": "^3.3.0",
+    "electron-log": "^5.4.3",
+    "electron-updater": "^6.3.9",
+    "marked": "^16.4.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "transliteration": "^2.3.5"
+  },
+  "build": {
+    "appId": "com.bettings.projecthub",
+    "productName": "nodejs project hub",
+    "asar": false,
+    "directories": {
+      "output": "dist-build"
+    },
+    "files": [
+      "src/**/*",
+      "dist/renderer/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}
