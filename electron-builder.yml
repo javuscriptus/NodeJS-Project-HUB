@@ -19,7 +19,6 @@ win:
     - target: portable
       arch:
         - x64
-  icon: build/icon.ico
   publisherName: nodejs project hub Team
   signAndEditExecutable: false
 
@@ -45,8 +44,6 @@ nsis:
   createDesktopShortcut: true
   createStartMenuShortcut: true
   shortcutName: nodejs project hub
-  installerIcon: build/icon.ico
-  uninstallerIcon: build/icon.ico
 
 files:
   - from: .
