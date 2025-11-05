@@ -74,6 +74,18 @@
       ],
       "category": "Development"
     },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "category": "public.app-category.developer-tools"
+    },
+    "dmg": {
+      "writeUpdateInfo": false
+    },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
@@ -85,7 +97,8 @@
     "publish": {
       "provider": "github",
       "owner": "javuscriptus",
-      "repo": "NodeJS-Project-HUB"
+      "repo": "NodeJS-Project-HUB",
+      "releaseType": "release"
     }
   }
 }

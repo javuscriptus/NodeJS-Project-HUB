@@ -34,7 +34,11 @@ mac:
     - target: dmg
       arch:
         - x64
+        - arm64
   category: public.app-category.developer-tools
+
+dmg:
+  writeUpdateInfo: false
 
 nsis:
   oneClick: false
