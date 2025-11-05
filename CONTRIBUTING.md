@@ -1,106 +1,108 @@
 # Contributing to NodeJS Project Hub 🤝
 
-Спасибо за интерес к проекту! Мы рады любому вкладу — от исправления опечаток до новых функций.
+Thank you for your interest in the project! We welcome any contribution — from fixing typos to adding new features.
 
-## 📋 Содержание
+> 📖 **[Русская версия / Russian Version](docs/CONTRIBUTING_ru.md)**
+
+## 📋 Contents
 
 - [Code of Conduct](#code-of-conduct)
-- [Как внести вклад](#как-внести-вклад)
-- [Настройка окружения](#настройка-окружения)
-- [Стиль кода](#стиль-кода)
-- [Процесс разработки](#процесс-разработки)
-- [Отправка Pull Request](#отправка-pull-request)
+- [How to Contribute](#how-to-contribute)
+- [Environment Setup](#environment-setup)
+- [Code Style](#code-style)
+- [Development Process](#development-process)
+- [Submitting Pull Requests](#submitting-pull-requests)
 
 ## Code of Conduct
 
-Этот проект придерживается [Code of Conduct](CODE_OF_CONDUCT.md). Участвуя в проекте, вы соглашаетесь соблюдать его правила.
+This project adheres to a Code of Conduct. By participating in this project, you agree to abide by its terms.
 
-## Как внести вклад
+## How to Contribute
 
-### 🐛 Сообщить о баге
+### 🐛 Report a Bug
 
-1. Проверьте, что баг еще не был [зарегистрирован](https://github.com/javuscriptus/NodeJS-Project-HUB/issues)
-2. Если не найден, [создайте новый issue](https://github.com/javuscriptus/NodeJS-Project-HUB/issues/new?template=bug_report.md)
-3. Опишите проблему максимально подробно:
-   - Шаги для воспроизведения
-   - Ожидаемое поведение
-   - Фактическое поведение
-   - Скриншоты (если применимо)
-   - Версия ОС и Node.js
+1. Check that the bug hasn't already been [reported](https://github.com/javuscriptus/NodeJS-Project-HUB/issues)
+2. If not found, [create a new issue](https://github.com/javuscriptus/NodeJS-Project-HUB/issues/new?template=bug_report.md)
+3. Describe the problem in as much detail as possible:
+   - Steps to reproduce
+   - Expected behavior
+   - Actual behavior
+   - Screenshots (if applicable)
+   - OS and Node.js version
 
-### ✨ Предложить функцию
+### ✨ Suggest a Feature
 
-1. Проверьте [существующие запросы](https://github.com/javuscriptus/NodeJS-Project-HUB/issues?q=is%3Aissue+label%3Aenhancement)
-2. [Создайте Feature Request](https://github.com/javuscriptus/NodeJS-Project-HUB/issues/new?template=feature_request.md)
-3. Опишите:
-   - Проблему, которую решает функция
-   - Предлагаемое решение
-   - Альтернативные варианты
+1. Check [existing requests](https://github.com/javuscriptus/NodeJS-Project-HUB/issues?q=is%3Aissue+label%3Aenhancement)
+2. [Create a Feature Request](https://github.com/javuscriptus/NodeJS-Project-HUB/issues/new?template=feature_request.md)
+3. Describe:
+   - The problem the feature solves
+   - Proposed solution
+   - Alternative options
 
-### 💻 Внести код
+### 💻 Contribute Code
 
-1. Fork репозитория
-2. Создайте ветку от `main`: `git checkout -b feature/amazing-feature`
-3. Внесите изменения
-4. Commit с понятным сообщением: `git commit -m '✨ Add amazing feature'`
-5. Push в вашу ветку: `git push origin feature/amazing-feature`
-6. Откройте Pull Request
+1. Fork the repository
+2. Create a branch from `main`: `git checkout -b feature/amazing-feature`
+3. Make changes
+4. Commit with a clear message: `git commit -m '✨ Add amazing feature'`
+5. Push to your branch: `git push origin feature/amazing-feature`
+6. Open a Pull Request
 
-## Настройка окружения
+## Environment Setup
 
-### Требования
+### Requirements
 
-- **Node.js** 18.x или выше
-- **npm** 9.x или выше
+- **Node.js** 18.x or higher
+- **npm** 9.x or higher
 - **Git**
 
-### Установка
+### Installation
 
 ```bash
-# Клонируйте ваш fork
+# Clone your fork
 git clone https://github.com/YOUR_USERNAME/NodeJS-Project-HUB.git
 cd NodeJS-Project-HUB
 
-# Установите зависимости
+# Install dependencies
 npm install
 
-# Запустите в режиме разработки
+# Run in development mode
 npm run dev
 ```
 
-### Структура проекта
+### Project Structure
 
 ```
 project-hub/
 ├── src/
-│   ├── main/          # Главный процесс Electron
-│   ├── preload/       # Preload скрипты
+│   ├── main/          # Electron Main Process
+│   ├── preload/       # Preload scripts
 │   └── renderer/      # React UI
-├── tests/             # Тесты
-├── scripts/           # Вспомогательные скрипты
-└── build/             # Ресурсы для сборки
+├── tests/             # Tests
+├── scripts/           # Helper scripts
+└── build/             # Build resources
 ```
 
-## Стиль кода
+## Code Style
 
 ### JavaScript/React
 
-- Используйте **ESLint** конфигурацию проекта
-- Следуйте **Prettier** правилам
-- Функциональные компоненты с Hooks
-- Именование:
-  - `camelCase` для переменных и функций
-  - `PascalCase` для компонентов
-  - `UPPER_CASE` для констант
+- Use project's **ESLint** configuration
+- Follow **Prettier** rules
+- Functional components with Hooks
+- Naming:
+  - `camelCase` for variables and functions
+  - `PascalCase` for components
+  - `UPPER_CASE` for constants
 
 ```javascript
-// ✅ Хорошо
+// ✅ Good
 const getUserData = async userId => {
   const data = await fetchUser(userId);
   return data;
 };
 
-// ❌ Плохо
+// ❌ Bad
 const get_user_data = async user_id => {
   const data = await fetchUser(user_id);
   return data;
@@ -109,17 +111,17 @@ const get_user_data = async user_id => {
 
 ### Git Commits
 
-Используйте конвенциональные коммиты с эмодзи:
+Use conventional commits with emojis:
 
-- ✨ `:sparkles:` - Новая функция
-- 🐛 `:bug:` - Исправление бага
-- 📝 `:memo:` - Документация
-- 🎨 `:art:` - Улучшение UI/стиля кода
-- ⚡ `:zap:` - Улучшение производительности
-- ♻️ `:recycle:` - Рефакторинг
-- ✅ `:white_check_mark:` - Добавление тестов
-- 🔧 `:wrench:` - Изменение конфигурации
-- 🚀 `:rocket:` - Развертывание
+- ✨ `:sparkles:` - New feature
+- 🐛 `:bug:` - Bug fix
+- 📝 `:memo:` - Documentation
+- 🎨 `:art:` - UI/code style improvements
+- ⚡ `:zap:` - Performance improvements
+- ♻️ `:recycle:` - Refactoring
+- ✅ `:white_check_mark:` - Add tests
+- 🔧 `:wrench:` - Configuration changes
+- 🚀 `:rocket:` - Deployment
 
 ```bash
 git commit -m "✨ Add dark mode support"
@@ -127,94 +129,94 @@ git commit -m "🐛 Fix Git status detection"
 git commit -m "📝 Update README with new features"
 ```
 
-## Процесс разработки
+## Development Process
 
-### 1. Перед началом работы
+### 1. Before Starting Work
 
 ```bash
-# Обновите main ветку
+# Update main branch
 git checkout main
 git pull upstream main
 
-# Создайте ветку для задачи
+# Create branch for task
 git checkout -b feature/my-feature
 ```
 
-### 2. Разработка
+### 2. Development
 
 ```bash
-# Запуск в dev режиме
+# Run in dev mode
 npm run dev
 
-# Запуск тестов
+# Run tests
 npm test
 
-# Проверка линтером
+# Check with linter
 npm run lint
 
-# Сборка
+# Build
 npm run build
 ```
 
-### 3. Тестирование
+### 3. Testing
 
-- Убедитесь, что все существующие тесты проходят
-- Добавьте тесты для новой функциональности
-- Проверьте работу на разных ОС (если возможно)
+- Ensure all existing tests pass
+- Add tests for new functionality
+- Check functionality on different OS (if possible)
 
-### 4. Документация
+### 4. Documentation
 
-- Обновите README.md если добавлена новая функция
-- Добавьте JSDoc комментарии к функциям
-- Обновите CHANGELOG.md
+- Update README.md if new feature added
+- Add JSDoc comments to functions
+- Update CHANGELOG.md
 
-## Отправка Pull Request
+## Submitting Pull Requests
 
-### Checklist перед отправкой
+### Checklist Before Submission
 
-- [ ] Код соответствует стилю проекта
-- [ ] Все тесты проходят (`npm test`)
-- [ ] Линтер не выдает ошибок (`npm run lint`)
-- [ ] Приложение собирается (`npm run build`)
-- [ ] Добавлена документация
-- [ ] Обновлен CHANGELOG.md
-- [ ] Коммиты имеют понятные сообщения
+- [ ] Code follows project style
+- [ ] All tests pass (`npm test`)
+- [ ] No linter errors (`npm run lint`)
+- [ ] Application builds (`npm run build`)
+- [ ] Documentation added
+- [ ] CHANGELOG.md updated
+- [ ] Commits have clear messages
 
-### Создание PR
+### Creating a PR
 
-1. Push вашей ветки в fork
-2. Откройте Pull Request в главный репозиторий
-3. Заполните шаблон PR:
-   - Описание изменений
-   - Связанные issues
-   - Тип изменений (bugfix/feature/docs/etc)
-   - Скриншоты (если UI изменения)
-4. Дождитесь ревью
+1. Push your branch to fork
+2. Open Pull Request to main repository
+3. Fill out PR template:
+   - Description of changes
+   - Related issues
+   - Type of changes (bugfix/feature/docs/etc)
+   - Screenshots (if UI changes)
+4. Wait for review
 
-### После ревью
+### After Review
 
-- Внесите запрошенные изменения
-- Push обновления в вашу ветку
-- Отвечайте на комментарии
-- Будьте готовы к обсуждению
+- Make requested changes
+- Push updates to your branch
+- Respond to comments
+- Be ready for discussion
 
-## 🙏 Спасибо!
+## 🙏 Thank You!
 
-Каждый вклад имеет значение, будь то:
+Every contribution matters, whether it's:
 
-- 🐛 Исправление опечатки
-- 📝 Улучшение документации
-- ✨ Новая функция
-- 💡 Предложение идеи
+- 🐛 Fixing a typo
+- 📝 Improving documentation
+- ✨ Adding a new feature
+- 💡 Suggesting an idea
 
-Спасибо, что делаете NodeJS Project Hub лучше! 🚀
+Thank you for making NodeJS Project Hub better! 🚀
 
 ---
 
-## Вопросы?
+## Questions?
 
-Не стесняйтесь:
+Don't hesitate to:
 
-- Открыть [Discussion](https://github.com/javuscriptus/NodeJS-Project-HUB/discussions)
-- Создать [Issue](https://github.com/javuscriptus/NodeJS-Project-HUB/issues)
-- Написать в комментариях к Pull Request
+- Open a [Discussion](https://github.com/javuscriptus/NodeJS-Project-HUB/discussions)
+- Create an [Issue](https://github.com/javuscriptus/NodeJS-Project-HUB/issues)
+- Comment on Pull Requests

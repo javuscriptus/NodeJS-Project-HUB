@@ -2,9 +2,9 @@
 
 # 🚀 NodeJS Project Hub
 
-**Desktop-приложение для управления Node.js проектами**
+**Desktop application for managing Node.js projects**
 
-Быстрый доступ к npm скриптам, git операциям и навигации по проектам
+Quick access to npm scripts, git operations and project navigation
 
 [![Build Status](https://github.com/javuscriptus/NodeJS-Project-HUB/workflows/Build%20and%20Test/badge.svg)](https://github.com/javuscriptus/NodeJS-Project-HUB/actions)
 [![Release](https://img.shields.io/github/v/release/javuscriptus/NodeJS-Project-HUB)](https://github.com/javuscriptus/NodeJS-Project-HUB/releases)
@@ -14,77 +14,79 @@
 [![Downloads](https://img.shields.io/github/downloads/javuscriptus/NodeJS-Project-HUB/total)](https://github.com/javuscriptus/NodeJS-Project-HUB/releases)
 [![Stars](https://img.shields.io/github/stars/javuscriptus/NodeJS-Project-HUB?style=social)](https://github.com/javuscriptus/NodeJS-Project-HUB)
 
-[Скачать](https://github.com/javuscriptus/NodeJS-Project-HUB/releases) • [Документация](#использование) • [Roadmap](#roadmap-v30) • [Contributing](CONTRIBUTING.md)
+[Download](https://github.com/javuscriptus/NodeJS-Project-HUB/releases) • [Documentation](#usage) • [Roadmap](#roadmap-v30) • [Contributing](CONTRIBUTING.md)
 
 ![NodeJS Project Hub](https://via.placeholder.com/800x450/1a1a2e/16a085?text=NodeJS+Project+Hub+Screenshot)
 
 </div>
 
+> 📖 **[Русская версия / Russian Version](docs/README_ru.md)**
+
 ---
 
-## Возможности
+## Features
 
-### Базовые функции
+### Core Functionality
 
-- 🔍 Быстрый поиск проектов по названию и заметкам
-- 🚀 Запуск npm/yarn/pnpm скриптов в один клик
-- 🔄 Git pull для быстрого обновления кода
-- 📁 Открытие проектов в Windows Explorer
-- ⚡ Кэширование для быстрого сканирования
-- 🎨 Современный UI с Tailwind CSS
+- 🔍 Quick project search by name and notes
+- 🚀 One-click npm/yarn/pnpm script execution
+- 🔄 Git pull for quick code updates
+- 📁 Open projects in Windows Explorer
+- ⚡ Caching for fast scanning
+- 🎨 Modern UI with Tailwind CSS
 
-### Новое в v2.0 🎉
+### New in v2.0 🎉
 
-- 🟢 **Node.js Version Management** - автоматическое определение и использование версий Node.js (nvm/volta/fnm)
-- 🔍 **Smart Search** - умный поиск с транслитерацией (кириллица ↔ латиница), тегами и алиасами
-- 💻 **Terminal Detection** - автоопределение терминала (Git Bash, PowerShell, CMD)
-- 🌿 **Git Intelligence** - отслеживание remote статуса веток (dev/main)
-- 📋 **Detail Panel** - боковая панель с README, коммитами и информацией о проекте
-- 🔄 **Auto-Updates** - автоматические обновления приложения
+- 🟢 **Node.js Version Management** - Auto-detect and use Node.js versions (nvm/volta/fnm)
+- 🔍 **Smart Search** - Intelligent search with transliteration (Cyrillic ↔ Latin), tags and aliases
+- 💻 **Terminal Detection** - Auto-detect terminal (Git Bash, PowerShell, CMD)
+- 🌿 **Git Intelligence** - Track remote status of branches (customizable per project)
+- 📋 **Detail Panel** - Side panel with README, commits and project info
+- 🔄 **Auto-Updates** - Automatic application updates
 
-## Системные требования
+## System Requirements
 
-- Windows 10 (1903+) или Windows 11
-- 512 MB RAM для приложения
-- 200 MB свободного места на диске
-- Git (для git операций)
-- Node.js version manager (опционально): nvm-windows, volta или fnm
+- Windows 10 (1903+) or Windows 11
+- 512 MB RAM for the application
+- 200 MB free disk space
+- Git (for git operations)
+- Node.js version manager (optional): nvm-windows, volta or fnm
 
-## Установка
+## Installation
 
-### Для пользователей
+### For Users
 
-📦 **Installer готов!** Файл `nodejs project hub Setup 1.0.0.exe` (92 MB) находится в папке `dist/`
+📦 **Installer ready!** The file `nodejs project hub Setup 2.0.0.exe` (92 MB) is in the `dist/` folder
 
-1. Запустите `nodejs project hub Setup 1.0.0.exe`
-2. Следуйте инструкциям установщика (можно выбрать папку установки)
-3. После установки приложение будет доступно через ярлык на рабочем столе
-4. При первом запуске укажите корневую папку с вашими проектами
+1. Run `nodejs project hub Setup 2.0.0.exe`
+2. Follow the installer instructions (you can choose the installation folder)
+3. After installation, the application will be available via a desktop shortcut
+4. On first launch, specify the root folder with your projects
 
-### Для разработчиков
+### For Developers
 
 ```bash
-# Клонирование репозитория
-git clone https://github.com/yourname/nodejs-project-hub.git
-cd nodejs-project-hub
+# Clone the repository
+git clone https://github.com/javuscriptus/NodeJS-Project-HUB.git
+cd NodeJS-Project-HUB
 
-# Установка зависимостей
+# Install dependencies
 npm install
 
-# Запуск в режиме разработки
+# Run in development mode
 npm run dev
 
-# В другом терминале запустить Electron
+# In another terminal, run Electron
 npm start
 ```
 
-## Разработка
+## Development
 
-### Структура проекта
+### Project Structure
 
 ```
 nodejs-project-hub/
-├── docs/                   # Документация
+├── docs/                   # Documentation
 ├── src/
 │   ├── main/              # Electron Main Process
 │   │   ├── index.js       # Entry point
@@ -98,193 +100,192 @@ nodejs-project-hub/
 │       └── src/
 │           ├── App.jsx
 │           └── components/
-├── build/                 # Иконки и ресурсы
+├── build/                 # Icons and resources
 ├── package.json
 └── vite.config.js
 ```
 
-### Команды
+### Commands
 
 ```bash
-# Разработка (Vite dev server)
+# Development (Vite dev server)
 npm run dev
 
-# Запуск Electron (в отдельном терминале после npm run dev)
+# Run Electron (in separate terminal after npm run dev)
 npm start
 
-# Сборка renderer процесса
+# Build renderer process
 npm run build
 
-# Сборка Windows installer
+# Build Windows installer
 npm run build:win
 
-# Тестирование
+# Testing
 npm test
 
-# Watch mode для тестов
+# Watch mode for tests
 npm run test:watch
 ```
 
-### Создание иконки (опционально)
-
-Сейчас используется стандартная иконка Electron. Чтобы создать custom иконку:
-
-1. Откройте `build/create-icon.html` в браузере
-2. Автоматически загрузится PNG файл
-3. Конвертируйте PNG в ICO через онлайн-сервис (например, https://convertio.co/ru/png-ico/)
-4. Сохраните как `build/icon.ico` (256x256px)
-5. Соберите заново: `npm run build:win`
-
-```
-
-### Технологии
+### Technologies
 
 - **Electron** 39+ - Desktop framework
-- **React** 19+ - UI библиотека
+- **React** 19+ - UI library
 - **Vite** 6+ - Build tool
 - **Tailwind CSS** 3.4+ - CSS framework (+ Typography plugin)
-- **electron-builder** 26+ - Упаковка приложения
-- **electron-updater** 6+ - Автообновления
-- **electron-log** 5+ - Логирование
-- **marked** + **dompurify** - Рендеринг Markdown
-- **transliteration** - Поддержка транслитерации для поиска
-- **Vitest** 4+ - Unit тестирование
+- **electron-builder** 26+ - Application packaging
+- **electron-updater** 6+ - Auto-updates
+- **electron-log** 5+ - Logging
+- **marked** + **dompurify** - Markdown rendering
+- **transliteration** - Transliteration support for search
+- **Vitest** 4+ - Unit testing
 
-## Использование
+## Usage
 
-### Первый запуск
+### First Launch
 
-1. При первом запуске откроется окно настроек
-2. Нажмите "Выбрать папку" и укажите корневую папку с вашими проектами (например, `C:\Dev`)
-3. Нажмите "Сохранить"
-4. Кликните "Сканировать" для поиска проектов
+1. On first launch, the settings window will open
+2. Click "Select Folder" and specify the root folder with your projects (e.g., `C:\Dev`)
+3. Click "Save"
+4. Click "Scan" to search for projects
 
-### Основные функции
+### Main Features
 
-**Сканирование проектов:**
-- Приложение ищет все папки с `package.json` + `.git`
-- Результаты кэшируются для быстрого повторного сканирования
+**Project Scanning:**
+- The application searches for all folders with `package.json` + `.git`
+- Results are cached for fast rescanning
 
-**Умный поиск:**
-- Введите название проекта (поддерживается кириллица и латиница)
-- Поиск по тегам, алиасам и заметкам проектов
-- Фильтрация по тегам через UI
-- Результаты обновляются в реальном времени (debounce 300ms)
+**Smart Search:**
+- Enter project name (Cyrillic and Latin supported)
+- Search by tags, aliases and project notes
+- Tag filtering via UI
+- Real-time results (debounce 300ms)
 
-**Запуск npm скриптов:**
-- Кнопки отображаются только для существующих скриптов
-- Клик открывает новое окно терминала с запущенной командой
+**Running npm Scripts:**
+- Buttons are displayed only for existing scripts
+- Click opens a new terminal window with the running command
 
-**Git операции:**
-- Git pull: Выполняет `git pull origin dev` с уведомлением о результате
-- Git Remote Status: Отслеживание статуса веток `dev` и `main`
-  - ✅ Up-to-date - ветка актуальна
-  - 🔽 Behind - показывает количество коммитов позади remote
-  - ⚠️ Error - проблемы с подключением (VPN, offline)
+**Git Operations:**
+- Git pull: Executes `git pull origin dev` with result notification
+- Git Remote Status: Track branch status (customizable per project)
+  - ✅ Up-to-date - branch is current
+  - 🔽 Behind - shows number of commits behind remote
+  - ⚠️ Error - connection issues (VPN, offline)
 
-**Открытие папки:**
-- Кнопка 📁 открывает проект в Windows Explorer
+**Open Folder:**
+- 📁 button opens the project in Windows Explorer
 
 **Detail Panel:**
-- Кнопка 📋 открывает боковую панель с детальной информацией
-- **README Tab**: Просмотр README.md с красивой типографикой
-- **Commits Tab**: История последних 10 коммитов
-- **Info Tab**: Данные из package.json, версия Node.js, список веток
+- 📋 button opens side panel with detailed information
+- **README Tab**: View README.md with beautiful typography
+- **Commits Tab**: History of last 10 commits
+- **Info Tab**: Data from package.json, Node.js version, branch list
 
-**Управление проектами:**
-- Кнопка ⚙️ открывает настройки проекта
-- Добавление/удаление тегов для организации
-- Создание алиасов для быстрого поиска
-- Добавление заметок к проектам
+**Project Management:**
+- ⚙️ button opens project settings
+- Add/remove tags for organization
+- Create aliases for quick search
+- Add notes to projects
+- **NEW**: Select branches to track for remote status
 
-## Конфигурация
+## Configuration
 
-Настройки хранятся в:
+Settings are stored in:
 ```
-
 C:\Users\<Username>\AppData\Roaming\BettingsProjectHub\config.json
-
 ```
 
-Логи хранятся в:
+Logs are stored in:
 ```
-
 C:\Users\<Username>\AppData\Roaming\BettingsProjectHub\logs\main.log
-
 ```
 
-## Документация
+## Documentation
 
-Полная документация находится в папке `docs/`:
+Full documentation is in the `docs/` folder:
 
-- `01-product-requirements.md` - Требования продукта, персоны, user stories
-- `02-ux-architecture.md` - UX-поток, архитектура, IPC контракты
-- `03-implementation-plan.md` - План релиза, риски, тестирование
+- `01-product-requirements.md` - Product requirements, personas, user stories
+- `02-ux-architecture.md` - UX flow, architecture, IPC contracts
+- `03-implementation-plan.md` - Release plan, risks, testing
 
-## Безопасность
+## Security
 
 - ✅ Context Isolation enabled
 - ✅ Node Integration disabled
 - ✅ Sandbox enabled
-- ✅ Валидация всех путей
-- ✅ Whitelist для npm скриптов
-- ✅ Escape аргументов команд
+- ✅ Path validation
+- ✅ Whitelist for npm scripts
+- ✅ Command argument escaping
 
 ## 🤝 Contributing
 
-Мы приветствуем вклад от сообщества! Пожалуйста, ознакомьтесь с [руководством по вкладу](CONTRIBUTING.md).
+We welcome contributions from the community! Please see [Contributing Guide](CONTRIBUTING.md).
 
-### Как помочь
+### How to Help
 
-- 🐛 [Сообщить о баге](https://github.com/javuscriptus/NodeJS-Project-HUB/issues/new?template=bug_report.md)
-- ✨ [Предложить функцию](https://github.com/javuscriptus/NodeJS-Project-HUB/issues/new?template=feature_request.md)
-- 📖 Улучшить документацию
-- 🔀 Отправить Pull Request
+- 🐛 [Report a bug](https://github.com/javuscriptus/NodeJS-Project-HUB/issues/new?template=bug_report.md)
+- ✨ [Suggest a feature](https://github.com/javuscriptus/NodeJS-Project-HUB/issues/new?template=feature_request.md)
+- 📖 Improve documentation
+- 🔀 Submit a Pull Request
 
-### Контрибьюторы
+### Contributors
 
 <a href="https://github.com/javuscriptus/NodeJS-Project-HUB/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=javuscriptus/NodeJS-Project-HUB" />
 </a>
 
-## 📄 Лицензия
+## 📄 License
 
-Проект распространяется под лицензией [MIT](LICENSE).
+This project is licensed under the [MIT](LICENSE) license.
 
-## 🆘 Поддержка
+## 🆘 Support
 
-Если у вас возникли проблемы:
+If you have problems:
 
-1. 📖 Проверьте [документацию](#использование)
-2. 🔍 Поищите в [Issues](https://github.com/javuscriptus/NodeJS-Project-HUB/issues)
-3. 💬 Создайте [новый Issue](https://github.com/javuscriptus/NodeJS-Project-HUB/issues/new)
-4. 📝 Проверьте логи в `AppData\Roaming\BettingsProjectHub\logs`
+1. 📖 Check the [documentation](#usage)
+2. 🔍 Search in [Issues](https://github.com/javuscriptus/NodeJS-Project-HUB/issues)
+3. 💬 Create a [new Issue](https://github.com/javuscriptus/NodeJS-Project-HUB/issues/new)
+4. 📝 Check logs in `AppData\Roaming\BettingsProjectHub\logs`
 
-### Частые проблемы
+### Common Issues
 
 <details>
-<summary>Git операции не работают</summary>
+<summary>Git operations don't work</summary>
 
-- Убедитесь, что Git установлен и доступен в PATH
-- Проверьте права доступа к папкам с проектами
-- Для GitLab используйте Git Credential Manager
+- Make sure Git is installed and available in PATH
+- Check access rights to project folders
+- For GitLab use Git Credential Manager:
+  ```bash
+  git config --global credential.helper manager
+  ```
 </details>
 
 <details>
-<summary>Не отображаются проекты</summary>
+<summary>Projects not displayed</summary>
 
-- Убедитесь, что в папке есть `package.json` и `.git`
-- Проверьте путь к корневой папке проектов
-- Попробуйте пересканировать проекты
+- Make sure the folder has `package.json` and `.git`
+- Check the path to the root folder of projects
+- Try rescanning projects
 </details>
 
 <details>
-<summary>Скрипты не запускаются</summary>
+<summary>Scripts don't run</summary>
 
-- Проверьте, что Node.js установлен
-- Убедитесь, что package.json содержит секцию scripts
-- Проверьте выбранный терминал в настройках
+- Check that Node.js is installed
+- Make sure package.json contains scripts section
+- Check the selected terminal in settings
 </details>
+
+## Roadmap v3.0
+
+- [ ] Full yarn and pnpm package manager support
+- [ ] Check outdated dependencies
+- [ ] Monorepo support (lerna, nx, turborepo)
+- [ ] GitHub Actions/CI status integration
+- [ ] Export/import project configuration
+- [ ] Global file content search
+- [ ] Dark/light theme switching
+- [ ] Multi-branch projects with multiple branch tracking
 
 ## ⭐ Star History
 
@@ -294,96 +295,9 @@ C:\Users\<Username>\AppData\Roaming\BettingsProjectHub\logs\main.log
 
 <div align="center">
 
-**Сделано с ❤️ для Node.js разработчиков**
+**Made with ❤️ for Node.js developers**
 
-[⬆ Наверх](#-nodejs-project-hub)
+[⬆ Back to Top](#-nodejs-project-hub)
 
 </div>
 
-## Что нового в v2.0
-
-### ✨ Feature 1: Node.js Version Management
-
-**Автоматическое управление версиями Node.js для каждого проекта:**
-- Поддержка менеджеров: `nvm-windows`, `volta`, `fnm`
-- Автоопределение версии из `.nvmrc`, `package.json` (engines.node)
-- Автоматическое переключение версии при запуске скриптов
-- UI для выбора менеджера версий (Settings)
-- Уведомления об отсутствующих версиях
-
-### 🔍 Feature 2: Smart Search
-
-**Мощный поиск для управления 100+ проектами:**
-- **Транслитерация**: Пишите "реакт" или "react" - найдёт оба варианта
-- **Поиск по тегам**: Фильтруйте проекты по меткам (frontend, backend и т.д.)
-- **Поиск по алиасам**: Создавайте короткие псевдонимы для проектов
-- **Поиск по заметкам**: Ищите по описаниям проектов
-- Debounce (300ms) для оптимизации производительности
-- Фильтрация по тегам с UI кнопками
-
-### 💻 Feature 3: Terminal Detection
-
-**Умное определение и настройка терминала:**
-- Автоопределение доступных терминалов (Git Bash, PowerShell, CMD)
-- Настройка терминала по умолчанию через UI
-- Адаптация команд под тип терминала
-- Приоритезация: Git Bash > PowerShell > CMD
-
-### 🌿 Feature 4: Git Intelligence
-
-**Отслеживание удалённых изменений:**
-- Remote Status для веток `dev` и `main`
-- Автоматический `git fetch` перед проверкой
-- Визуальные индикаторы: ✅ up-to-date, 🔽 N commits behind, ⚠️ error
-- Tooltips с подробной информацией
-- Обработка ошибок сети (VPN, offline) с таймаутами
-
-### 📋 Feature 5: Detail Panel
-
-**Боковая панель с полной информацией о проекте:**
-- **README Tab**: Рендеринг Markdown с красивой типографикой
-- **Commits Tab**: История последних 10 git коммитов
-- **Info Tab**:
-  - Данные из `package.json` (description, version, dependencies)
-  - Текущая версия Node.js
-  - Список всех веток проекта
-- Анимация slide-in при открытии/закрытии
-- Кнопка "📋 Подробнее" в каждой строке проекта
-
-### 🔄 Feature 6: Auto-Updates
-
-**Автоматические обновления приложения:**
-- Проверка обновлений при запуске и каждые 4 часа
-- Toast уведомления о доступных версиях
-- Progress bar при загрузке
-- Возможность пропустить версию (сохраняется в localStorage)
-- Ручная проверка через Settings
-- Отображение текущей версии приложения
-
-### 🎨 Feature 7: Project Metadata
-
-**Управление метаданными проектов:**
-- **Теги**: Создание и управление метками для организации
-- **Алиасы**: Короткие псевдонимы для быстрого поиска
-- **Заметки**: Описания и комментарии к проектам
-- Modal окно для редактирования (кнопка ⚙️)
-- Сохранение в конфигурации приложения
-
-## Roadmap v3.0
-
-- [ ] Поддержка yarn и pnpm package managers
-- [ ] Проверка outdated зависимостей
-- [ ] Поддержка монорепозиториев (lerna, nx, turborepo)
-- [ ] Интеграция с GitHub Actions/CI статусом
-- [ ] Экспорт/импорт конфигурации проектов
-- [ ] Глобальный поиск по содержимому файлов
-- [ ] Переключение темной/светлой темы
-- [ ] Multi-branch проекты с отслеживанием нескольких веток
-
----
-
-**Версия:** 2.0.0
-**Статус:** ✅ PRODUCTION READY
-**Дата релиза:** 05.11.2025
-
-```
