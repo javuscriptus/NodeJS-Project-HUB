@@ -21,7 +21,7 @@
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",
     "@vitejs/plugin-react": "^4.7.0",
-    "@vitest/ui": "^4.0.6",
+    "@vitest/ui": "^4.0.8",
     "autoprefixer": "^10.4.21",
     "electron": "^39.0.0",
     "electron-builder": "^26.0.12",
