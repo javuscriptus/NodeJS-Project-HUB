@@ -1,7 +1,4 @@
-const { exec } = require('child_process');
-const { promisify } = require('util');
-
-const execPromise = promisify(exec);
+const { CommandExecutor } = require('./utils/commandExecutor');
 
 const GIT_TIMEOUT = 30000; // 30 секунд
 
@@ -10,8 +7,9 @@ const GIT_TIMEOUT = 30000; // 30 секунд
  */
 async function getCurrentBranch(projectPath) {
   try {
-    const { stdout, stderr } = await execPromise(
-      `git -C "${projectPath}" branch --show-current`,
+    const { stdout, stderr } = await CommandExecutor.executeGit(
+      projectPath,
+      ['branch', '--show-current'],
       { timeout: GIT_TIMEOUT }
     );
     
@@ -31,8 +29,9 @@ async function getCurrentBranch(projectPath) {
  */
 async function pullFromOrigin(projectPath) {
   try {
-    const { stdout, stderr } = await execPromise(
-      `git -C "${projectPath}" pull origin dev`,
+    const { stdout, stderr } = await CommandExecutor.executeGit(
+      projectPath,
+      ['pull', 'origin', 'dev'],
       { timeout: GIT_TIMEOUT }
     );
     
@@ -66,8 +65,9 @@ async function pullFromOrigin(projectPath) {
  */
 async function isGitRepository(projectPath) {
   try {
-    await execPromise(
-      `git -C "${projectPath}" rev-parse --git-dir`,
+    await CommandExecutor.executeGit(
+      projectPath,
+      ['rev-parse', '--git-dir'],
       { timeout: 5000 }
     );
     return true;
@@ -82,8 +82,9 @@ async function isGitRepository(projectPath) {
  */
 async function getGitStatus(projectPath) {
   try {
-    const { stdout } = await execPromise(
-      `git -C "${projectPath}" status --porcelain`,
+    const { stdout } = await CommandExecutor.executeGit(
+      projectPath,
+      ['status', '--porcelain'],
       { timeout: 5000 }
     );
     
@@ -144,8 +145,9 @@ async function checkRemoteStatus(projectPath, branch) {
   try {
     // Сначала делаем fetch (с timeout для случая отсутствия VPN)
     try {
-      await execPromise(
-        `git -C "${projectPath}" fetch origin ${branch}`,
+      await CommandExecutor.executeGit(
+        projectPath,
+        ['fetch', 'origin', branch],
         { timeout: 10000 } // 10 секунд на fetch
       );
     } catch (fetchError) {
@@ -158,14 +160,16 @@ async function checkRemoteStatus(projectPath, branch) {
     }
 
     // Получаем локальный SHA
-    const { stdout: localSha } = await execPromise(
-      `git -C "${projectPath}" rev-parse ${branch}`,
+    const { stdout: localSha } = await CommandExecutor.executeGit(
+      projectPath,
+      ['rev-parse', branch],
       { timeout: 5000 }
     );
 
     // Получаем удаленный SHA
-    const { stdout: remoteSha } = await execPromise(
-      `git -C "${projectPath}" rev-parse origin/${branch}`,
+    const { stdout: remoteSha } = await CommandExecutor.executeGit(
+      projectPath,
+      ['rev-parse', `origin/${branch}`],
       { timeout: 5000 }
     );
 
@@ -178,8 +182,9 @@ async function checkRemoteStatus(projectPath, branch) {
     }
 
     // Если SHA разные, считаем количество коммитов позади
-    const { stdout: commitsBehind } = await execPromise(
-      `git -C "${projectPath}" rev-list --count ${branch}..origin/${branch}`,
+    const { stdout: commitsBehind } = await CommandExecutor.executeGit(
+      projectPath,
+      ['rev-list', '--count', `${branch}..origin/${branch}`],
       { timeout: 5000 }
     );
 
@@ -204,8 +209,9 @@ async function checkRemoteStatus(projectPath, branch) {
  */
 async function getAllBranches(projectPath) {
   try {
-    const { stdout } = await execPromise(
-      `git -C "${projectPath}" branch -a`,
+    const { stdout } = await CommandExecutor.executeGit(
+      projectPath,
+      ['branch', '-a'],
       { timeout: 5000 }
     );
 
@@ -268,8 +274,9 @@ async function checkAllMainBranches(projectPath) {
  */
 async function switchBranch(projectPath, branch) {
   try {
-    const { stdout, stderr } = await execPromise(
-      `git -C "${projectPath}" checkout ${branch}`,
+    const { stdout, stderr } = await CommandExecutor.executeGit(
+      projectPath,
+      ['checkout', branch],
       { timeout: 10000 }
     );
 

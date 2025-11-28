@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import logger from '../utils/logger';
 
 const TAG_COLORS = [
   'from-red-500/20 to-red-600/20 border-red-500/30 text-red-400',
@@ -37,7 +38,7 @@ export default function TagManager({ project, onTagsChange }) {
         setAvailableTags(availableTagsResult.tags);
       }
     } catch (error) {
-      console.error('Error loading tags:', error);
+      logger.error('Error loading tags:', error);
     }
   };
 
@@ -50,7 +51,7 @@ export default function TagManager({ project, onTagsChange }) {
         if (onTagsChange) onTagsChange();
       }
     } catch (error) {
-      console.error('Error adding tag:', error);
+      logger.error('Error adding tag:', error);
     }
   };
 
@@ -62,7 +63,7 @@ export default function TagManager({ project, onTagsChange }) {
         if (onTagsChange) onTagsChange();
       }
     } catch (error) {
-      console.error('Error removing tag:', error);
+      logger.error('Error removing tag:', error);
     }
   };
 
@@ -77,7 +78,7 @@ export default function TagManager({ project, onTagsChange }) {
         setShowNewTagInput(false);
       }
     } catch (error) {
-      console.error('Error creating tag:', error);
+      logger.error('Error creating tag:', error);
     }
   };
 
