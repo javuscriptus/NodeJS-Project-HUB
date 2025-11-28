@@ -14,13 +14,14 @@ Quick access to npm scripts, git operations and project navigation
 [![Downloads](https://img.shields.io/github/downloads/javuscriptus/NodeJS-Project-HUB/total)](https://github.com/javuscriptus/NodeJS-Project-HUB/releases)
 [![Stars](https://img.shields.io/github/stars/javuscriptus/NodeJS-Project-HUB?style=social)](https://github.com/javuscriptus/NodeJS-Project-HUB)
 
-[Download](https://github.com/javuscriptus/NodeJS-Project-HUB/releases) • [Documentation](#usage) • [Roadmap](#roadmap-v30) • [Contributing](CONTRIBUTING.md)
+[Download](https://github.com/javuscriptus/NodeJS-Project-HUB/releases) • [Documentation](#usage) • [Roadmap](#roadmap-v30) • [Contributing](CONTRIBUTING.md) • [Improvements](SUGGESTED_IMPROVEMENTS.md)
 
 ![NodeJS Project Hub](https://via.placeholder.com/800x450/1a1a2e/16a085?text=NodeJS+Project+Hub+Screenshot)
 
 </div>
 
-> 📖 **[Русская версия / Russian Version](docs/README_ru.md)**
+> 📖 **[Русская версия / Russian Version](docs/README_ru.md)**  
+> 🎯 **[Suggested Improvements / Предложения по улучшению](SUGGESTED_IMPROVEMENTS.md)**
 
 ---
 
