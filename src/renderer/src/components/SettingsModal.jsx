@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import logger from '../utils/logger';
 
 export default function SettingsModal({ isOpen, onClose, onSave, currentPath }) {
   const [selectedPath, setSelectedPath] = useState(currentPath || '');
@@ -60,7 +61,7 @@ export default function SettingsModal({ isOpen, onClose, onSave, currentPath }) 
       
       setTerminalStatus('success');
     } catch (error) {
-      console.error('Error loading terminal settings:', error);
+      logger.error('Error loading terminal settings:', error);
       setTerminalStatus('error');
     }
   };
@@ -87,7 +88,7 @@ export default function SettingsModal({ isOpen, onClose, onSave, currentPath }) 
       
       setNodeStatus('success');
     } catch (error) {
-      console.error('Error loading Node settings:', error);
+      logger.error('Error loading Node settings:', error);
       setNodeStatus('error');
     }
   };
@@ -103,7 +104,7 @@ export default function SettingsModal({ isOpen, onClose, onSave, currentPath }) 
         setCurrentVersion(result.version);
       }
     } catch (error) {
-      console.error('Error loading app version:', error);
+      logger.error('Error loading app version:', error);
     }
   };
 
@@ -114,7 +115,7 @@ export default function SettingsModal({ isOpen, onClose, onSave, currentPath }) 
       // Результат будет показан через UpdateNotification компонент
       setTimeout(() => setIsCheckingUpdates(false), 2000);
     } catch (error) {
-      console.error('Error checking for updates:', error);
+      logger.error('Error checking for updates:', error);
       setIsCheckingUpdates(false);
     }
   };
@@ -126,7 +127,7 @@ export default function SettingsModal({ isOpen, onClose, onSave, currentPath }) 
         setGitRemoteCheckEnabled(result.enabled);
       }
     } catch (error) {
-      console.error('Error loading git settings:', error);
+      logger.error('Error loading git settings:', error);
     }
   };
 
@@ -135,7 +136,7 @@ export default function SettingsModal({ isOpen, onClose, onSave, currentPath }) 
       setGitRemoteCheckEnabled(enabled);
       await window.electronAPI.setGitRemoteCheckEnabled(enabled);
     } catch (error) {
-      console.error('Error saving git remote check setting:', error);
+      logger.error('Error saving git remote check setting:', error);
     }
   };
 
@@ -148,7 +149,7 @@ export default function SettingsModal({ isOpen, onClose, onSave, currentPath }) 
         setSelectedPath(result.filePaths[0]);
       }
     } catch (error) {
-      console.error('Error selecting folder:', error);
+      logger.error('Error selecting folder:', error);
     }
   };
 

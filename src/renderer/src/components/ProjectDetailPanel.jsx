@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import GitStatusIcon from './GitStatusIcon';
+import logger from '../utils/logger';
 
 export default function ProjectDetailPanel({ project, onClose }) {
   const [readme, setReadme] = useState(null);
@@ -44,7 +45,7 @@ export default function ProjectDetailPanel({ project, onClose }) {
         setBranches(branchesResult.branches);
       }
     } catch (error) {
-      console.error('Error loading project details:', error);
+      logger.error('Error loading project details:', error);
     } finally {
       setLoading(false);
     }

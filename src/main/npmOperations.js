@@ -1,5 +1,6 @@
-const { exec } = require('child_process');
 const path = require('path');
+const { CommandExecutor } = require('./utils/commandExecutor');
+const { ErrorHandler } = require('./utils/errorHandler');
 const { getRunCommand } = require('./packageManagerDetector');
 const { getTerminal, getNodeManager, loadConfig } = require('./config');
 const { TerminalDetector } = require('./terminalDetector');
@@ -31,158 +32,142 @@ function getAvailableScripts(packageJson) {
 
 /**
  * Генерирует команду для запуска скрипта в терминале
- * @param {string} terminalPath - Путь к терминалу
- * @param {string} terminalType - Тип терминала (bash, cmd, powershell)
- * @param {string} projectPath - Путь к проекту
  * @param {string} runCommand - Команда запуска (npm run, yarn, pnpm)
- * @returns {string} Команда для exec
+ * @returns {string} Команда для терминала
  */
-function generateTerminalCommand(terminalPath, terminalType, projectPath, runCommand) {
-  const safePath = projectPath.replace(/"/g, '\\"');
-  
-  switch (terminalType) {
-    case 'bash':
-      // Git Bash синтаксис
-      // Преобразуем Windows путь в UNIX стиль для bash
-      const unixPath = projectPath.replace(/\\/g, '/').replace(/^([A-Z]):/, (match, drive) => {
-        return `/${drive.toLowerCase()}`;
-      });
-      return `start "" "${terminalPath}" --login -i -c "cd '${unixPath}' && ${runCommand}; exec bash"`;
-      
-    case 'powershell':
-      // PowerShell синтаксис
-      return `start "" "${terminalPath}" -NoExit -Command "cd '${safePath}'; ${runCommand}"`;
-      
-    case 'cmd':
-    default:
-      // CMD синтаксис (по умолчанию)
-      return `start cmd /k "cd /d "${safePath}" && ${runCommand}"`;
-  }
+function generateTerminalCommand(runCommand) {
+  return runCommand;
 }
 
 /**
  * Запускает npm/yarn/pnpm скрипт в новом окне терминала
  */
 async function runScript(projectPath, scriptName, packageManager = 'npm') {
-  return new Promise(async (resolve, reject) => {
-    try {
+  try {
     // Валидация scriptName (whitelist)
     if (!ALLOWED_SCRIPTS.includes(scriptName)) {
-      return reject(new Error('Invalid script name'));
+      return {
+        success: false,
+        error: 'Invalid script name'
+      };
     }
     
-      // Получаем правильную команду для package manager
-      let runCommand = getRunCommand(packageManager, scriptName);
+    // Получаем правильную команду для package manager
+    let runCommand = getRunCommand(packageManager, scriptName);
+    
+    // Получаем настройки терминала из config
+    const terminal = await getTerminal();
+    
+    // Определяем терминал
+    let terminalPath, terminalType;
+    if (terminal.path && terminal.type) {
+      terminalPath = terminal.path;
+      terminalType = terminal.type;
+    } else {
+      // Fallback: автоопределение терминала
+      const detector = new TerminalDetector();
+      const defaultTerminal = await detector.getDefaultTerminal();
+      terminalPath = defaultTerminal.path;
+      terminalType = defaultTerminal.type;
+    }
+    
+    // === ИНТЕГРАЦИЯ NODE VERSION MANAGER ===
+    // Получаем настройки Node.js версий
+    const nodeVersionManager = new NodeVersionManager();
+    const config = await loadConfig();
+    
+    // Определяем менеджер Node.js версий
+    let nodeManager = await getNodeManager();
+    if (nodeManager === 'auto') {
+      nodeManager = await nodeVersionManager.detectNodeManager();
+    }
+    
+    // Получаем требуемую версию Node.js для проекта
+    const requiredVersion = await nodeVersionManager.getRequiredNodeVersion(projectPath, config);
+    
+    // Если есть менеджер версий - проверяем установлена ли версия
+    if (nodeManager !== 'none') {
+      const isInstalled = await nodeVersionManager.isVersionInstalled(requiredVersion, nodeManager);
       
-      // Получаем настройки терминала из config
-      const terminal = await getTerminal();
-      
-      // Определяем терминал
-      let terminalPath, terminalType;
-      if (terminal.path && terminal.type) {
-        terminalPath = terminal.path;
-        terminalType = terminal.type;
-      } else {
-        // Fallback: автоопределение терминала
-        const detector = new TerminalDetector();
-        const defaultTerminal = await detector.getDefaultTerminal();
-        terminalPath = defaultTerminal.path;
-        terminalType = defaultTerminal.type;
+      if (!isInstalled) {
+        // Версия не установлена - вернуть ошибку
+        return {
+          success: false,
+          error: `Node.js версия ${requiredVersion} не установлена. Установите ее через ${nodeManager}.`,
+          needsInstall: true,
+          version: requiredVersion,
+          manager: nodeManager
+        };
       }
       
-      // === ИНТЕГРАЦИЯ NODE VERSION MANAGER ===
-      // Получаем настройки Node.js версий
-      const nodeVersionManager = new NodeVersionManager();
-      const config = await loadConfig();
-      
-      // Определяем менеджер Node.js версий
-      let nodeManager = await getNodeManager();
-      if (nodeManager === 'auto') {
-        nodeManager = await nodeVersionManager.detectNodeManager();
-      }
-      
-      // Получаем требуемую версию Node.js для проекта
-      const requiredVersion = await nodeVersionManager.getRequiredNodeVersion(projectPath, config);
-      
-      // Если есть менеджер версий - проверяем установлена ли версия
-      if (nodeManager !== 'none') {
-        const isInstalled = await nodeVersionManager.isVersionInstalled(requiredVersion, nodeManager);
-        
-        if (!isInstalled) {
-          // Версия не установлена - вернуть ошибку
-          return resolve({
-            success: false,
-            error: `Node.js версия ${requiredVersion} не установлена. Установите ее через ${nodeManager}.`,
-            needsInstall: true,
-            version: requiredVersion,
-            manager: nodeManager
-          });
-        }
-        
-        // Генерируем команду с правильной версией Node.js
-        runCommand = nodeVersionManager.generateRunCommand(
-          nodeManager,
-          requiredVersion,
-          runCommand,
-          terminalType
-        );
-      }
-      // === КОНЕЦ ИНТЕГРАЦИИ ===
-      
-      // Генерируем финальную команду для терминала
-      const command = generateTerminalCommand(
-        terminalPath,
-        terminalType,
-        projectPath,
-        runCommand
+      // Генерируем команду с правильной версией Node.js
+      runCommand = nodeVersionManager.generateRunCommand(
+        nodeManager,
+        requiredVersion,
+        runCommand,
+        terminalType
       );
-    
-    // Выполнение команды
-    exec(command, (error) => {
-      if (error) {
-        resolve({ 
-          success: false, 
-          error: error.message 
-        });
-      } else {
-        resolve({ 
-            success: true,
-            nodeVersion: requiredVersion,
-            nodeManager: nodeManager
-        });
-      }
-    });
-    } catch (error) {
-      resolve({ 
-        success: false, 
-        error: error.message 
-      });
     }
-  });
+    // === КОНЕЦ ИНТЕГРАЦИИ ===
+    
+    // Генерируем финальную команду для терминала
+    const command = generateTerminalCommand(runCommand);
+    
+    // Выполнение команды через CommandExecutor
+    const process = CommandExecutor.spawnInTerminal(terminalPath, command, projectPath);
+    
+    process.on('error', (error) => {
+      ErrorHandler.warn('Failed to spawn terminal:', error);
+    });
+    
+    process.unref();
+    
+    return { 
+      success: true,
+      nodeVersion: requiredVersion,
+      nodeManager: nodeManager
+    };
+  } catch (error) {
+    return ErrorHandler.handle(error, 'runScript');
+  }
 }
 
 /**
- * Открывает папку проекта в Windows Explorer
+ * Открывает папку проекта в системном файловом менеджере
  */
 async function openFolder(folderPath) {
-  return new Promise((resolve, reject) => {
-    // Валидация пути
-    const normalizedPath = path.normalize(folderPath);
+  try {
+    // Валидация пути через CommandExecutor
+    const normalizedPath = CommandExecutor.validatePath(folderPath);
     
-    // Команда для Windows Explorer
-    exec(`explorer "${normalizedPath}"`, (error) => {
-      if (error) {
-        resolve({ 
-          success: false, 
-          error: error.message 
-        });
-      } else {
-        resolve({ 
-          success: true 
-        });
-      }
+    const { spawn } = require('child_process');
+    let command, args;
+    
+    // Определяем команду в зависимости от платформы
+    if (process.platform === 'win32') {
+      command = 'explorer';
+      args = [normalizedPath];
+    } else if (process.platform === 'darwin') {
+      command = 'open';
+      args = [normalizedPath];
+    } else {
+      command = 'xdg-open';
+      args = [normalizedPath];
+    }
+    
+    const process = spawn(command, args, {
+      detached: true,
+      stdio: 'ignore'
     });
-  });
+    
+    process.unref();
+    
+    return { 
+      success: true 
+    };
+  } catch (error) {
+    return ErrorHandler.handle(error, 'openFolder');
+  }
 }
 
 module.exports = {

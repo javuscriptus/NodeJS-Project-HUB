@@ -6,6 +6,7 @@ import TagFilter from './components/TagFilter';
 import ProjectDetailPanel from './components/ProjectDetailPanel';
 import ProjectSettingsModal from './components/ProjectSettingsModal';
 import UpdateNotification from './components/UpdateNotification';
+import logger from './utils/logger';
 
 export default function App() {
   const [projects, setProjects] = useState([]);
@@ -32,30 +33,30 @@ export default function App() {
 
   const setupUpdateListeners = () => {
     window.electronAPI.onUpdateAvailable(info => {
-      console.log('Update available:', info);
+      logger.info('Update available:', info);
       setUpdateInfo(info);
     });
 
     window.electronAPI.onDownloadProgress(progress => {
-      console.log('Download progress:', progress);
+      logger.info('Download progress:', progress);
       setDownloadProgress(progress);
     });
 
     window.electronAPI.onUpdateDownloaded(info => {
-      console.log('Update downloaded:', info);
+      logger.info('Update downloaded:', info);
       setDownloadProgress(null);
       setUpdateDownloaded(true);
     });
 
     window.electronAPI.onUpdateError(error => {
-      console.error('Update error:', error);
+      logger.error('Update error:', error);
       showNotification('Ошибка обновления: ' + error, 'error');
       setUpdateInfo(null);
       setDownloadProgress(null);
     });
 
     window.electronAPI.onUpdateNotAvailable(() => {
-      console.log('No updates available');
+      logger.info('No updates available');
     });
   };
 
@@ -73,7 +74,7 @@ export default function App() {
         setProjectNotes(config.projectNotes);
       }
     } catch (error) {
-      console.error('Error loading config:', error);
+      logger.error('Error loading config:', error);
     }
   };
 
@@ -87,7 +88,7 @@ export default function App() {
         projectNotes: newNotes,
       });
     } catch (error) {
-      console.error('Error saving note:', error);
+      logger.error('Error saving note:', error);
     }
   };
 
@@ -132,7 +133,7 @@ export default function App() {
           tagsMap[project.path] = result.tags;
         }
       } catch (error) {
-        console.error('Error loading tags for', project.name, error);
+        logger.error('Error loading tags for', project.name, error);
       }
     }
 
@@ -144,11 +145,11 @@ export default function App() {
     try {
       const result = await window.electronAPI.getGitRemoteCheckEnabled();
       if (!result.success || !result.enabled) {
-        console.log('Git Remote Status check is disabled');
+        logger.info('Git Remote Status check is disabled');
         return; // Не проверяем если выключено
       }
     } catch (error) {
-      console.error('Error checking git remote setting:', error);
+      logger.error('Error checking git remote setting:', error);
       return;
     }
 
@@ -182,7 +183,7 @@ export default function App() {
         // Обновляем state после каждой проверки для постепенного отображения
         setProjects([...updatedProjects]);
       } catch (error) {
-        console.error('Error checking git remote status for', project.name, error);
+        logger.error('Error checking git remote status for', project.name, error);
       }
     }
   };
@@ -290,7 +291,7 @@ export default function App() {
         const result = await window.electronAPI.searchProjects(searchQuery, filteredProjects);
         setSearchResults(result.success ? result.projects : filteredProjects);
       } catch (error) {
-        console.error('Search error:', error);
+        logger.error('Search error:', error);
         setSearchResults(filteredProjects);
       } finally {
         setIsSearching(false);

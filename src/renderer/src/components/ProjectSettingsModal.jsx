@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import TagInput from './TagInput';
+import logger from '../utils/logger';
 
 export default function ProjectSettingsModal({ project, isOpen, onClose, onSave }) {
   const [tags, setTags] = useState([]);
@@ -40,7 +41,7 @@ export default function ProjectSettingsModal({ project, isOpen, onClose, onSave 
         setTrackedBranches(trackedResult.branches || ['dev', 'main']);
       }
     } catch (error) {
-      console.error('Failed to load project metadata:', error);
+      logger.error('Failed to load project metadata:', error);
     } finally {
       setIsLoading(false);
     }
@@ -70,7 +71,7 @@ export default function ProjectSettingsModal({ project, isOpen, onClose, onSave 
       onSave();
       onClose();
     } catch (error) {
-      console.error('Failed to save project metadata:', error);
+      logger.error('Failed to save project metadata:', error);
       alert('Ошибка при сохранении: ' + error.message);
     } finally {
       setIsLoading(false);
@@ -89,7 +90,7 @@ export default function ProjectSettingsModal({ project, isOpen, onClose, onSave 
     }
   };
 
-  console.log('ProjectSettingsModal render:', { isOpen, project });
+  logger.debug('ProjectSettingsModal render:', { isOpen, project });
 
   if (!isOpen) return null;
 

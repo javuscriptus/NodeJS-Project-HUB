@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import logger from '../utils/logger';
 
 export default function TagFilter({ onFilterChange, projects }) {
   const [allTags, setAllTags] = useState([]);
@@ -17,7 +18,7 @@ export default function TagFilter({ onFilterChange, projects }) {
         setAllTags(result.tags);
       }
     } catch (error) {
-      console.error('Failed to load tags:', error);
+      logger.error('Failed to load tags:', error);
     }
   };
 

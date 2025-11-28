@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import GitStatusIcon from './GitStatusIcon';
+import logger from '../utils/logger';
+import { SCRIPT_ICONS, PACKAGE_MANAGER_ICONS } from '../constants';
 
 export default function ProjectRow({ project, onRunScript, onGitPull, onOpenFolder, note, onUpdateNote, onTagsChange, onMetadataUpdate, onViewDetails, onOpenSettings }) {
   const [loading, setLoading] = useState({
@@ -17,7 +19,7 @@ export default function ProjectRow({ project, onRunScript, onGitPull, onOpenFold
           setNodeVersion(result.version);
         }
       } catch (error) {
-        console.error('Error loading Node version:', error);
+        logger.error('Error loading Node version:', error);
       }
     };
 
@@ -40,19 +42,6 @@ export default function ProjectRow({ project, onRunScript, onGitPull, onOpenFold
     } finally {
       setLoading({ ...loading, pull: false });
     }
-  };
-
-  const scriptIcons = {
-    'browser:dev': '🌐',
-    'mobile:dev': '📱',
-    'browser:build': '🔨',
-    'mobile:build': '📦'
-  };
-
-  const packageManagerIcons = {
-    'npm': '📦',
-    'yarn': '🧶',
-    'pnpm': '⚡'
   };
 
   const getGitStatusBadge = () => {
@@ -88,7 +77,7 @@ export default function ProjectRow({ project, onRunScript, onGitPull, onOpenFold
     if (!project.scripts[scriptName]) return null;
 
     const isLoading = loading.script === scriptName;
-    const icon = scriptIcons[scriptName];
+    const icon = SCRIPT_ICONS[scriptName];
 
     return (
       <button
@@ -124,7 +113,7 @@ export default function ProjectRow({ project, onRunScript, onGitPull, onOpenFold
               className="px-2 py-1 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 border border-blue-500/30 text-blue-400 rounded text-xs font-mono"
               title={`Package Manager: ${project.packageManager || 'npm'}`}
             >
-              {packageManagerIcons[project.packageManager || 'npm']} {project.packageManager || 'npm'}
+              {PACKAGE_MANAGER_ICONS[project.packageManager || 'npm']} {project.packageManager || 'npm'}
             </span>
             {nodeVersion && (
               <span 
@@ -192,7 +181,7 @@ export default function ProjectRow({ project, onRunScript, onGitPull, onOpenFold
           {/* Project Settings */}
           <button
             onClick={() => {
-              console.log('Opening settings for project:', project.name);
+              logger.info('Opening settings for project:', project.name);
               if (onOpenSettings) {
                 onOpenSettings(project);
               }

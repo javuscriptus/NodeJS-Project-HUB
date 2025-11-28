@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import logger from '../utils/logger';
 
 /**
  * Компонент уведомления об обновлении приложения
@@ -67,7 +68,7 @@ function UpdateNotification() {
     try {
       await window.updater.download();
     } catch (error) {
-      console.error('Failed to download update:', error);
+      logger.error('Failed to download update:', error);
       setError(error.message);
       setUpdateState('error');
     }
@@ -77,7 +78,7 @@ function UpdateNotification() {
     try {
       await window.updater.install();
     } catch (error) {
-      console.error('Failed to install update:', error);
+      logger.error('Failed to install update:', error);
       setError(error.message);
       setUpdateState('error');
     }
