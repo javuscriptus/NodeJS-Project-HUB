@@ -12,7 +12,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     
     - name: Get tag name
       id: tag
@@ -47,7 +47,7 @@ jobs:
             artifact-path: dist-build/*.dmg
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     
     - name: Setup Node.js
       uses: actions/setup-node@v4
