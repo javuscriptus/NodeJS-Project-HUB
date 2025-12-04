@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import ProjectTable from './components/ProjectTable';
 import SearchBar from './components/SearchBar';
 import SettingsModal from './components/SettingsModal';
@@ -27,8 +27,11 @@ export default function App() {
   const [projectTags, setProjectTags] = useState({}); // { projectPath: [tags] }
   const [selectedProject, setSelectedProject] = useState(null); // Для detail panel
   const [selectedProjectForSettings, setSelectedProjectForSettings] = useState(null); // Для settings modal
+  const [updateInfo, setUpdateInfo] = useState(null);
+  const [downloadProgress, setDownloadProgress] = useState(null);
+  const [updateDownloaded, setUpdateDownloaded] = useState(false);
   
-  // Используем новый Toast система
+  // Используем новый Toast система вместо старого notification
   const toast = useToast();
   
   // Debounced search query для оптимизации
@@ -116,7 +119,7 @@ export default function App() {
     }
   };
 
-  const handleScan = useCallback(async () => {
+  const handleScan = async () => {
     if (!rootPath) {
       setError('Выберите корневую папку в настройках');
       return;
@@ -145,7 +148,7 @@ export default function App() {
     } finally {
       setLoading(false);
     }
-  }, [rootPath]);
+  };
 
   const loadProjectTags = async projectsList => {
     const tagsMap = {};
@@ -212,7 +215,7 @@ export default function App() {
     }
   };
 
-  const handleRunScript = useCallback(async (project, script) => {
+  const handleRunScript = async (project, script) => {
     try {
       const result = await window.electronAPI.runNpmScript(
         project.path,
@@ -220,61 +223,66 @@ export default function App() {
         project.packageManager || 'npm'
       );
       if (!result.success) {
-        toast.error(`Ошибка запуска: ${result.error}`);
+        showNotification(`Ошибка запуска: ${result.error}`, 'error');
       }
     } catch (error) {
-      toast.error(`Ошибка: ${error.message}`);
+      showNotification(`Ошибка: ${error.message}`, 'error');
     }
-  }, [toast]);
+  };
 
-  const handleGitPull = useCallback(async (project) => {
+  const handleGitPull = async project => {
     try {
       const result = await window.electronAPI.gitPull(project.path);
 
       if (result.success) {
-        toast.success(`✓ ${project.name} обновлен`);
+        showNotification(`✓ ${project.name} обновлен`, 'success');
         // Перезагрузить проекты для обновления данных
         setTimeout(handleScan, 1000);
       } else {
-        toast.error(`Ошибка git pull: ${result.message}`);
+        showNotification(`Ошибка git pull: ${result.message}`, 'error');
       }
     } catch (error) {
-      toast.error(`Ошибка: ${error.message}`);
+      showNotification(`Ошибка: ${error.message}`, 'error');
     }
-  }, [toast, handleScan]);
+  };
 
-  const handleOpenFolder = useCallback(async (project) => {
+  const handleOpenFolder = async project => {
     try {
       await window.electronAPI.openFolder(project.path);
     } catch (error) {
-      toast.error(`Ошибка открытия папки: ${error.message}`);
+      showNotification(`Ошибка открытия папки: ${error.message}`, 'error');
     }
-  }, [toast]);
+  };
 
-  const handleSaveSettings = useCallback(async (newRootPath) => {
+  const handleSaveSettings = async newRootPath => {
     try {
       const result = await window.electronAPI.saveConfig({ rootPath: newRootPath });
 
       if (result.success) {
         setRootPath(newRootPath);
         setShowSettings(false);
-        toast.success('Настройки сохранены');
+        showNotification('Настройки сохранены', 'success');
       } else {
-        toast.error('Ошибка сохранения настроек');
+        showNotification('Ошибка сохранения настроек', 'error');
       }
     } catch (error) {
-      toast.error('Ошибка: ' + error.message);
+      showNotification('Ошибка: ' + error.message, 'error');
     }
-  }, [toast]);
+  };
 
-  const handleCheckForUpdates = useCallback(async () => {
+  const showNotification = (message, type = 'info') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 3000);
+  };
+
+  const handleCheckForUpdates = async () => {
     try {
-      toast.info('Проверка обновлений...');
+      showNotification('Проверка обновлений...', 'info');
       await window.updater.check();
     } catch (error) {
-      toast.error('Ошибка проверки обновлений: ' + error.message);
+      showNotification('Ошибка проверки обновлений: ' + error.message, 'error');
     }
-  }, [toast]);
+  };
 
   // Фильтрация проектов с использованием умного поиска (транслитерация, теги, алиасы)
   const filteredProjects = useMemo(() => {
@@ -300,123 +308,181 @@ export default function App() {
 
   useEffect(() => {
     const performSearch = async () => {
-      if (!debouncedSearchQuery) {
-        setSearchResults([]);
-        setIsSearching(false);
+      if (!searchQuery.trim()) {
+        setSearchResults(filteredProjects);
         return;
       }
 
       setIsSearching(true);
-
       try {
-        // Используем SearchEngine с backend для продвинутого поиска
-        const result = await window.electronAPI.searchProjects(
-          debouncedSearchQuery,
-          filteredProjects
-        );
-
-        if (result.success) {
-          setSearchResults(result.projects);
-        }
+        const result = await window.electronAPI.searchProjects(searchQuery, filteredProjects);
+        setSearchResults(result.success ? result.projects : filteredProjects);
       } catch (error) {
         logger.error('Search error:', error);
+        setSearchResults(filteredProjects);
       } finally {
         setIsSearching(false);
       }
     };
 
     performSearch();
-  }, [debouncedSearchQuery, filteredProjects]);
+  }, [searchQuery, filteredProjects]);
 
-  // Получаем финальный список для отображения
-  const displayProjects = useMemo(() => {
-    return debouncedSearchQuery ? searchResults : filteredProjects;
-  }, [debouncedSearchQuery, searchResults, filteredProjects]);
-
-  // Обработчик тегов
-  const handleTagsChange = async newTags => {
-    setSelectedTags(newTags);
-  };
-
-  const handleShowProjectSettings = project => {
-    setSelectedProjectForSettings(project);
-  };
+  // Финальный список для отображения
+  const displayProjects = searchQuery.trim() ? searchResults : filteredProjects;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
-      <toast.ToastContainer />
-      
+    <div className="min-h-screen bg-gray-900">
       {/* Header */}
-      <header className="border-b border-gray-800 bg-gray-900/95 backdrop-blur sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                nodejs project hub
-              </h1>
-              <ThemeToggle />
-            </div>
+      <header className="bg-gray-800 shadow-lg border-b border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">
+            <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+              nodejs project hub
+            </span>
+          </h1>
 
-            <div className="flex items-center gap-3">
-              <button
-                onClick={handleCheckForUpdates}
-                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
-              >
-                🔄 Проверить обновления
-              </button>
-              <button
-                onClick={() => setShowSettings(true)}
-                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
-              >
-                ⚙️ Настройки
-              </button>
-              <button
-                onClick={handleScan}
-                disabled={loading}
-                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 rounded-lg font-medium transition-colors"
-              >
-                {loading ? '⏳ Сканирование...' : '🔍 Сканировать'}
-              </button>
+          <div className="flex items-center gap-4">
+            <div className="text-sm text-gray-400">
+              {rootPath && (
+                <span className="flex items-center gap-2">
+                  📁 <span className="font-mono text-xs">{rootPath}</span>
+                </span>
+              )}
             </div>
+            <button
+              onClick={handleCheckForUpdates}
+              className="p-2 hover:bg-gray-700 rounded transition-all duration-200 transform hover:scale-110"
+              title="Проверить обновления"
+            >
+              🔄
+            </button>
+            <button
+              onClick={() => setShowSettings(true)}
+              className="p-2 hover:bg-gray-700 rounded transition-all duration-200 transform hover:scale-110"
+              title="Настройки"
+            >
+              ⚙️
+            </button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-6">
-        {/* Search and Filters */}
+      <main className="max-w-7xl mx-auto px-4 py-6">
+        {/* Controls */}
         <div className="mb-6 space-y-4">
-          <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-          <TagFilter
-            projects={projects}
-            projectTags={projectTags}
-            selectedTags={selectedTags}
-            onTagsChange={handleTagsChange}
-          />
+          <div className="flex gap-4">
+            <button
+              onClick={handleScan}
+              disabled={loading || !rootPath}
+              className={`
+                px-6 py-2 rounded-lg font-medium
+                ${
+                  loading || !rootPath
+                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg'
+                }
+                transition-all duration-200 transform hover:scale-105
+              `}
+            >
+              {loading ? '⏳ Сканирование...' : '🔍 Сканировать'}
+            </button>
+
+            <div className="flex-1">
+              <SearchBar value={searchQuery} onChange={setSearchQuery} />
+            </div>
+          </div>
+
+          {/* Tag Filter */}
+          <TagFilter onFilterChange={setSelectedTags} projects={projects} />
         </div>
 
-        {/* Error Message */}
+        {/* Error State */}
         {error && (
-          <div className="mb-4 p-4 bg-red-900/50 border border-red-500 rounded-lg text-red-200">
-            {error}
+          <div className="mb-6 p-4 bg-red-900/20 border border-red-500/50 rounded-lg animate-fade-in">
+            <p className="text-red-400 text-sm">⚠️ {error}</p>
           </div>
         )}
 
-        {/* Projects Table or Skeleton */}
-        {loading ? (
-          <SkeletonLoader type="table" count={8} />
-        ) : (
-          <ProjectTable
-            projects={displayProjects}
-            onRunScript={handleRunScript}
-            onGitPull={handleGitPull}
-            onOpenFolder={handleOpenFolder}
-            onShowDetail={setSelectedProject}
-            onShowSettings={handleShowProjectSettings}
-            projectNotes={projectNotes}
-            onUpdateNote={handleUpdateNote}
-            projectTags={projectTags}
-          />
+        {/* Empty State */}
+        {!loading && !error && projects.length === 0 && (
+          <div className="text-center py-16 animate-fade-in">
+            <div className="text-6xl mb-4 animate-bounce">📂</div>
+            <h2 className="text-xl font-semibold text-gray-300 mb-2">
+              Нет проектов для отображения
+            </h2>
+            <p className="text-gray-500 mb-6">
+              {rootPath
+                ? 'Нажмите "Сканировать" чтобы найти проекты'
+                : 'Выберите корневую папку в настройках'}
+            </p>
+            {!rootPath && (
+              <button
+                onClick={() => setShowSettings(true)}
+                className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition-all transform hover:scale-105"
+              >
+                Выбрать папку
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* No Search Results */}
+        {!loading && projects.length > 0 && displayProjects.length === 0 && (
+          <div className="text-center py-16 animate-fade-in">
+            <div className="text-6xl mb-4">🔍</div>
+            <h2 className="text-xl font-semibold text-gray-300 mb-2">Ничего не найдено</h2>
+            <p className="text-gray-500 mb-2">
+              {searchQuery && `По запросу "${searchQuery}" ничего не найдено.`}
+              {selectedTags.length > 0 && ` С тегами: ${selectedTags.join(', ')}`}
+            </p>
+            <p className="text-xs text-gray-600">
+              Попробуйте изменить поисковый запрос или сбросить фильтры
+            </p>
+          </div>
+        )}
+
+        {/* Projects Table */}
+        {!loading && displayProjects.length > 0 && (
+          <>
+            {isSearching && (
+              <div className="mb-2 text-sm text-blue-400 flex items-center gap-2">
+                <span className="animate-spin">⏳</span>
+                Поиск...
+              </div>
+            )}
+            <ProjectTable
+              projects={displayProjects}
+              onRunScript={handleRunScript}
+              onGitPull={handleGitPull}
+              onOpenFolder={handleOpenFolder}
+              projectNotes={projectNotes}
+              onUpdateNote={handleUpdateNote}
+              onTagsChange={() => loadProjectTags(projects)}
+              onMetadataUpdate={() => {
+                // Перезагружаем проекты после обновления метаданных
+                handleScan();
+              }}
+              onViewDetails={project => setSelectedProject(project)}
+              onOpenSettings={project => setSelectedProjectForSettings(project)}
+            />
+
+            <div className="mt-4 flex items-center justify-between text-sm text-gray-500">
+              <div>
+                Найдено: {displayProjects.length}{' '}
+                {displayProjects.length === 1 ? 'проект' : 'проектов'}
+                {(searchQuery || selectedTags.length > 0) &&
+                  projects.length !== displayProjects.length &&
+                  ` (из ${projects.length})`}
+              </div>
+              <div className="flex items-center gap-2 text-xs text-gray-600">
+                <span>v2.0.0</span>
+                <span>•</span>
+                <span>nodejs project hub</span>
+              </div>
+            </div>
+          </>
         )}
       </main>
 
@@ -427,6 +493,20 @@ export default function App() {
         onSave={handleSaveSettings}
         currentPath={rootPath}
       />
+
+      {/* Notification */}
+      {notification && (
+        <div
+          className={`
+            fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg
+            ${notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'}
+            text-white font-medium
+            animate-fade-in
+          `}
+        >
+          {notification.message}
+        </div>
+      )}
 
       {/* Project Detail Panel */}
       {selectedProject && (
@@ -448,9 +528,6 @@ export default function App() {
 
       {/* Update Notification */}
       <UpdateNotification />
-
-      {/* Keyboard Shortcuts Help */}
-      <KeyboardShortcutsHelp />
     </div>
   );
 }
