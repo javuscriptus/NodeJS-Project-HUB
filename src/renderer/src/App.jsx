@@ -28,6 +28,11 @@ export default function App() {
   const [selectedProject, setSelectedProject] = useState(null); // Для detail panel
   const [selectedProjectForSettings, setSelectedProjectForSettings] = useState(null); // Для settings modal
   
+  // Update state
+  const [updateInfo, setUpdateInfo] = useState(null);
+  const [downloadProgress, setDownloadProgress] = useState(null);
+  const [updateDownloaded, setUpdateDownloaded] = useState(false);
+  
   // Используем новый Toast система
   const toast = useToast();
   

@@ -3,11 +3,12 @@ import { getAvailableScripts, ALLOWED_SCRIPTS } from '../src/main/npmOperations.
 
 describe('npmOperations', () => {
   describe('getAvailableScripts', () => {
-    it('должен фильтровать только разрешенные скрипты', () => {
+    it('should filter only allowed scripts from package.json', () => {
       const packageJson = {
         scripts: {
           'browser:dev': 'vite',
           'mobile:dev': 'expo start',
+          'dev': 'vite',
           'test': 'vitest',
           'custom-script': 'echo test'
         }
@@ -17,15 +18,16 @@ describe('npmOperations', () => {
       
       expect(result['browser:dev']).toBe(true);
       expect(result['mobile:dev']).toBe(true);
-      expect(result['test']).toBeUndefined();
+      expect(result['dev']).toBe(true);
+      expect(result['test']).toBe(true);
       expect(result['custom-script']).toBeUndefined();
     });
 
-    it('должен вернуть пустой объект если нет разрешенных скриптов', () => {
+    it('should return empty object if no allowed scripts exist', () => {
       const packageJson = {
         scripts: {
-          'test': 'vitest',
-          'lint': 'eslint'
+          'custom-script': 'echo test',
+          'another-script': 'echo hello'
         }
       };
       
@@ -34,7 +36,7 @@ describe('npmOperations', () => {
       expect(Object.keys(result)).toHaveLength(0);
     });
 
-    it('должен обработать отсутствие секции scripts', () => {
+    it('should handle missing scripts section', () => {
       const packageJson = {};
       
       const result = getAvailableScripts(packageJson);
@@ -44,13 +46,82 @@ describe('npmOperations', () => {
   });
 
   describe('ALLOWED_SCRIPTS', () => {
-    it('должен содержать только 4 разрешенных скрипта', () => {
-      expect(ALLOWED_SCRIPTS).toHaveLength(4);
+    it('should contain all allowed scripts including common npm scripts', () => {
+      expect(ALLOWED_SCRIPTS).toHaveLength(10);
+      // Original scripts
       expect(ALLOWED_SCRIPTS).toContain('browser:dev');
       expect(ALLOWED_SCRIPTS).toContain('mobile:dev');
       expect(ALLOWED_SCRIPTS).toContain('browser:build');
       expect(ALLOWED_SCRIPTS).toContain('mobile:build');
+      // Extended common scripts
+      expect(ALLOWED_SCRIPTS).toContain('dev');
+      expect(ALLOWED_SCRIPTS).toContain('start');
+      expect(ALLOWED_SCRIPTS).toContain('build');
+      expect(ALLOWED_SCRIPTS).toContain('test');
+      expect(ALLOWED_SCRIPTS).toContain('lint');
+      expect(ALLOWED_SCRIPTS).toContain('format');
+    });
+  });
+
+  describe('getAvailableScripts with extended scripts', () => {
+    it('should find common npm scripts (dev, start, build, test)', () => {
+      const packageJson = {
+        scripts: {
+          'dev': 'vite',
+          'start': 'node index.js',
+          'build': 'vite build',
+          'test': 'vitest',
+          'lint': 'eslint src',
+          'format': 'prettier --write src'
+        }
+      };
+      
+      const result = getAvailableScripts(packageJson);
+      
+      expect(result['dev']).toBe(true);
+      expect(result['start']).toBe(true);
+      expect(result['build']).toBe(true);
+      expect(result['test']).toBe(true);
+      expect(result['lint']).toBe(true);
+      expect(result['format']).toBe(true);
+    });
+
+    it('should find mixed scripts (browser:dev + dev)', () => {
+      const packageJson = {
+        scripts: {
+          'browser:dev': 'vite --browser',
+          'dev': 'vite',
+          'custom': 'echo custom'
+        }
+      };
+      
+      const result = getAvailableScripts(packageJson);
+      
+      expect(result['browser:dev']).toBe(true);
+      expect(result['dev']).toBe(true);
+      expect(result['custom']).toBeUndefined();
+      expect(Object.keys(result)).toHaveLength(2);
+    });
+
+    it('should find all allowed scripts when all are present', () => {
+      const packageJson = {
+        scripts: {
+          'browser:dev': 'vite --browser',
+          'mobile:dev': 'expo start',
+          'browser:build': 'vite build --browser',
+          'mobile:build': 'expo build',
+          'dev': 'vite',
+          'start': 'node index.js',
+          'build': 'vite build',
+          'test': 'vitest',
+          'lint': 'eslint src',
+          'format': 'prettier --write src'
+        }
+      };
+      
+      const result = getAvailableScripts(packageJson);
+      
+      expect(Object.keys(result)).toHaveLength(10);
     });
   });
 });
-

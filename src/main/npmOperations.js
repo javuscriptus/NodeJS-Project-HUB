@@ -7,11 +7,18 @@ const { TerminalDetector } = require('./terminalDetector');
 const { NodeVersionManager } = require('./nodeVersionManager');
 
 // Whitelist разрешенных скриптов для безопасности
+// Extended to include common npm scripts for better developer experience
 const ALLOWED_SCRIPTS = [
   'browser:dev',
   'mobile:dev',
   'browser:build',
-  'mobile:build'
+  'mobile:build',
+  'dev',
+  'start',
+  'build',
+  'test',
+  'lint',
+  'format'
 ];
 
 /**
